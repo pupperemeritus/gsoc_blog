@@ -1,7 +1,3 @@
----
-layout: page
----
-
 # pupperemeritus's GSoC Blog
 
 ## Interested Project
