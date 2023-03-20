@@ -1,1 +1,6 @@
-# Week 1 Progress
+---
+layout: page
+title: Week 1 Progress
+---
+
+

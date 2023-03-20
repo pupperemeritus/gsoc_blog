@@ -1,1 +1,6 @@
-# Week 12 Progress
+---
+layout: page
+title: Week 12 Progress
+---
+
+

@@ -1,1 +1,6 @@
-# Week 10 Progress
+---
+layout: page
+title: Week 10 Progress
+---
+
+

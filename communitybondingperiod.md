@@ -1,1 +1,6 @@
-# Community Bonding Period Progress
+---
+layout: page
+title: Community Bonding Period Progress
+---
+
+

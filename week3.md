@@ -1,1 +1,6 @@
-# Week 3 Progress
+---
+layout: page
+title: Week 3 Progress
+---
+
+

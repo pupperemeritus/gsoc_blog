@@ -1,1 +1,6 @@
-# Week 8 Progress
+---
+layout: page
+title: Week 8 Progress
+---
+
+

@@ -1,1 +1,6 @@
-# Week 7 Progress
+---
+layout: page
+title: Week 7 Progress
+---
+
+
