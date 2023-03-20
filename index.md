@@ -1,10 +1,8 @@
----
-title: pupperemeritus's GSoC Blog
----
+# pupperemeritus's GSoC Blog
 
-# Interested Project
+## Interested Project
 
-## Astronomy With Unevenly Sampled Data
+### Astronomy With Unevenly Sampled Data
 
 The project involves time series analysis of unevenly sampled data. The goal is to create the class that generates Lomb-Scargle spectrum of the data and match these implementations with the structure of existing functionalities of Powerspectrum and Crosspectrum classes as well as the normalisations performed by them.
 
