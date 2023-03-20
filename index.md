@@ -25,29 +25,3 @@ The following normalizations are available with the implementation
 - PSD Normalization The false_alarm_probability method is used to determine the probability of a peak as high as the input or higher.
 
 The major chunk of the work would be to get the wrap the Lomb-Scargle class of astropy in a way that works with input types stingray.Lightcurve object, array of stingray.Lightcurve objects,Time array and EventList.
-
-## Learnings from Community Bonding Period
-
-## Week 1 Progress
-
-## Week 2 Progress
-
-## Week 3 Progress
-
-## Week 4 Progress
-
-## Week 5 Progress
-
-## Week 6 Progress
-
-## Week 7 Progress
-
-## Week 8 Progress
-
-## Week 9 Progress
-
-## Week 10 Progress
-
-## Week 11 Progress
-
-## Week 12 Progress
