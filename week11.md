@@ -1,6 +1,5 @@
 ---
 layout: page
-title: Week 11 Progress
 ---
 
-
+# Week 11 Progress

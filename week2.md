@@ -1,6 +1,5 @@
 ---
 layout: page
-title: Week 2 Progress
 ---
 
-
+# Week 2 Progress

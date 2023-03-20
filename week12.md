@@ -1,6 +1,5 @@
 ---
 layout: page
-title: Week 12 Progress
 ---
 
-
+# Week 12 Progress

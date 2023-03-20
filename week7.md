@@ -1,6 +1,5 @@
 ---
 layout: page
-title: Week 7 Progress
 ---
 
-
+# Week 7 Progress

@@ -1,6 +1,5 @@
 ---
 layout: page
-title: Week 8 Progress
 ---
 
-
+# Week 8 Progress
