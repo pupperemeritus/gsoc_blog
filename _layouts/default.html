@@ -14,17 +14,18 @@
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
     {% include head-custom.html %}
     <style>
-        nav ul {
+        nav ol {
             list-style-type: none;
             overflow: visible;
-            margin: auto;
+            margin: 2px;
+            padding: 2vw;
         }
 
-        nav ul li {
+        nav ol li {
             float: left;
         }
 
-        nav ul li a {
+        nav ol li a {
             display: block;
             text-align: center;
             text-decoration: none;
@@ -43,7 +44,7 @@
 
     <main id="content" class="main-content" role="main">
         <nav>
-            <ul>
+            <ol>
                 <li><a href="https://pupperemeritus.github.io/gsoc_blog/">Home</a></li>
                 <li><a href="https://pupperemeritus.github.io/gsoc_blog/communitybondingperiod/">Community Bonding
                         Period</a></li>
@@ -60,7 +61,7 @@
                 <li><a href="https://pupperemeritus.github.io/gsoc_blog/week11/">Week 11</a></li>
                 <li><a href="https://pupperemeritus.github.io/gsoc_blog/week12/">Week 12</a></li>
                 <li><a href="https://pupperemeritus.github.io/gsoc_blog/projectproposal">Project Proposal</a></li>
-            </ul>
+            </ol>
         </nav>
 
         {{ content }}
