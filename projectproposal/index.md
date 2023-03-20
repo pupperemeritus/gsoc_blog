@@ -24,9 +24,13 @@ I've always been interested in astronomy. I also delved into astrophotography re
 
 ## Project Proposal Application
 
-### Proposal title : Astronomy Using Unevenly Sampled Data
+### Proposal title
 
-### Organization : StingraySoftware
+Astronomy Using Unevenly Sampled Data
+
+### Organization
+
+StingraySoftware
 
 ## Abstract
 
