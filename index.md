@@ -4,24 +4,4 @@
 
 ### Astronomy With Unevenly Sampled Data
 
-The project involves time series analysis of unevenly sampled data. The goal is to create the class that generates Lomb-Scargle spectrum of the data and match these implementations with the structure of existing functionalities of Powerspectrum and Crosspectrum classes as well as the normalisations performed by them.
-
-There are multiple possible implementations as there are multiple implementations with different time complexities. It would be best to choose the existing implementation of Lomb-Scargle in astropy as it it has many implementation neatly integrated. Out of these it would be best to give the user the option to choose the algorithm. Or if chosen to be monolithic, the scipy version would be the best choice in combination of speed and accuracy.
-
-The following are the implmentations present in astropy.timeseries.LombScargle
-
-- original Lomb Scargle
-- Cython version of original
-- Scipy C version of original
-- FFT based fast version
-- matrix algebra based chi^2
-- FFT based chi^2
-
-The following normalizations are available with the implementation
-
-- Standard Normalization
-- Model Normalization
-- Logarithmic Normalization
-- PSD Normalization The false_alarm_probability method is used to determine the probability of a peak as high as the input or higher.
-
-The major chunk of the work would be to get the wrap the Lomb-Scargle class of astropy in a way that works with input types stingray.Lightcurve object, array of stingray.Lightcurve objects,Time array and EventList.
+Analyzing unevenly sampled data cannot be done with methods of the fourier domain. We use the lomb scargle domain to account for the unevenness of the data. I will be mainly implementing 3 classes, Lomb Scargle cross spectrum, power spectrum and dynamical power spectrum and in that order. I will be translating the implementation provided by Dr JD Scargle in MATLAB or FORTRAN into python. If the PSD arises as a special case of the CSD, then I would be reusing my CSD implementation otherwise I would be using the scipy.signal.LombScargle implementation to reduce development time. Later in the project after I complete the implementation of the 3 classes, I shall optimize the Lomb Scargle cross spectrum implementation by using JAX. Reason for choosing the scipy implementation is that it allows us to get an unnormalized PSD and astropy's implementation does not have that option, and their normalizations are different from the ones used in stingray. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs.
