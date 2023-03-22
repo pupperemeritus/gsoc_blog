@@ -1,13 +1,31 @@
 # Application
 
+## Proposal title
+
+Astronomy Using Unevenly Sampled Data
+
+## Organization
+
+StingraySoftware
+
+## Summary
+
+Analyzing unevenly sampled data cannot be done with methods of the fourier domain. We use the lomb scargle domain to account for the unevenness of the data. I will be mainly implementing 3 classes, Lomb Scargle cross spectrum, power spectrum and dynamical power spectrum and in that order. I will be translating the implementation provided by Dr JD Scargle in MATLAB or FORTRAN into python. If the PSD arises as a special case of the CSD, then I would be reusing my CSD implementation otherwise I would be using the scipy.signal.LombScargle implementation to reduce development time. Later in the project after I complete the implementation of the 3 classes, I shall optimize the Lomb Scargle cross spectrum implementation by using JAX. Reason for choosing the scipy implementation is that it allows us to get an unnormalized PSD and astropy's implementation does not have that option, and their normalizations are different from the ones used in stingray. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs.
+
 ## Contributor Information
 
-- Name : Sri Guru Datta Pisupati
-- Email : pupperemeritus9@protonmail.com
-- Time-zone : +05:30 (IST)
-- Slack : Sri Guru Datta Pisupati
-- Github : pupperemeritus
 - Blog : <https://pupperemeritus.github.io/gsoc_blog/>
+
+- Name : Sri Guru Datta Pisupati
+
+- Email : pupperemeritus9@protonmail.com
+
+- Time-zone : +05:30 (IST)
+
+- Slack : Sri Guru Datta Pisupati
+
+- Github : pupperemeritus
+
 - PR Links :
 
   - [notebooks pull request 64](https://github.com/StingraySoftware/notebooks/pull/64)
@@ -22,65 +40,72 @@ I am an undergraduate student of Chaitanya Bharathi Institute of Technology stud
 
 I've always been interested in astronomy. I also delved into astrophotography recently. I originally wanted to study astrophysics/astronomy along with computer science as my major and minor but the institutes in my country neither offer such flexibility nor the courses in one institute. I have done a few courses on coursera on astronomy such as Data Driven Astronomy and Analyzing The Universe. I am passionate about using and propogating open source software, and I feel this is a multi-faceted way of giving back to the community that I like so much. I feel my skill set is best suited for OpenAstronomy compared to any other project as I have a decent amount of domain as well as programming and software design knowledge. I am always looking to learn more. I view research work and work that aids in other's research as noble pursuits. I hope OpenAstronomy will not only be my journey into the world of FOSS but also to research and help me gain experience for higher studies.
 
-## Project Proposal Application
+## My approach
 
-### Proposal title
+### Proposed Structure
 
-Astronomy Using Unevenly Sampled Data
+Filename                             | Description
+------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LombScargle.py                       | contains the translation of crossspectrum implementation into python
+LombScargleCrossspectrum.py          | Using our custom crossspectrum implementation in LombScargle.py creating a class that can take in Light curve and eventlist data and create the cross spectrum
+LombScarglePowerSpectrum.py          | using existing implementation in astropy creating the power spectrum or using our cross spectrum implementation if power spectrum arises as a special case of power spectrum
+LombScargleDynamicalPowerSpectrum.py | Implementing the dynamical poweer spectrum by using astropy's cython implementation
 
-### Organization
+### Lomb Scargle module
 
-StingraySoftware
+Containing the core computational parts. Translating the MATLAB or FORTRAN version of crossspectrum given by Dr. Jeffrey D Scargle into Python. Using JAX for improved speed.
 
-## Abstract
+### Lomb Scargle Cross Spectrum
 
-Data is often imperfect and sampled at irregular intervals. Methods of Fourier domain require the data to be observed at evenly spaced intervals, reducing the amount of time we can observe a certain X-Ray or Gamma ray source. For some targets it is impossible to observe the data at regular intervals for a long period of time normally due to blocking of the source by Earth. Lomb Scargle Periodograms are used to detect periodic signals in unevenly spaced data. There are various algorithms for implementing Lomb-Scargle periodogram mainly based on Matrix Algebra, Fast Orthogonal Search and Chi-Squared Method.
+Wraps the Lomb Scargle cross spectrum in the above LombScargle implementation. Handles inputs of two light curves, eventlists, timearray and light curve iterables. Needs to perform data validity checks, normalization. Should have good time interval support.
+
+Class parameters
+
+Parameter          | Description                                       | Default
+------------------ | ------------------------------------------------- | --------------
+Data1              | light curve                                       | None
+Data2              | light curve                                       | None
+Power type         | real or complex power                             | real
+normalization      | Normalization methods(frac RMS, abs RMS, leahy)   | Fractional RMS
+time resolution    | time resolution only needed for eventlist objects | None
+good time interval | time interval                                     | None
+skip checks        | flag to skip checks                               | False
+
+### Lomb Scargle Power Spectrum
+
+First we must check whether LS power spectrum arises as a special case of the crossspectrum. Then we can reuse our implementation of the lomb scargle cross spectrum
+
+### Lomb Scargle Dynamical Power Spectrum
 
 ## Detailed Description
 
-The project involves time series analysis of unevenly sampled data. The goal is to create the class that generates Lomb-Scargle spectrum of the data and match these implementations with the structure of existing functionalities of Powerspectrum and Crosspectrum classes as well as the normalisations performed by them.
+The project involves time series analysis of unevenly sampled data. The goal is to create the classes that generates Lomb-Scargle Power spectrum, Cross spectrum and Dynamical Power spectrum of the data respectively and match these implementations with the structure of existing functionalities of Powerspectrum, Crosspectrum and Dynamical Power Spectrum classes as well as the normalisations performed by them.
 
-There are multiple possible implementations as there are multiple implementations with different time complexities. It would be best to choose the existing implementation of Lomb-Scargle in astropy as it it has many implementation neatly integrated. Out of these it would be best to give the user the option to choose the algorithm. Or if chosen to be monolithic, the scipy version would be the best choice in combination of speed and accuracyZ.
-
-The following are the implmentations present in astropy.timeseries.LombScargle
-
-- original Lomb Scargle
-- Cython version of original
-- Scipy C version of original
-- FFT, Fast Orthogonal Search based fast version using extrapolation approach
-- matrix algebra based chi^2
-- FFT based chi^2
-
-The following normalizations are available with the implementation
-
-- Standard Normalization
-- Model Normalization
-- Logarithmic Normalization
-- PSD Normalization
-
-The false_alarm_probability method is used to determine the probability of a peak greater than or equal to the peak in the data assuming data consists of gaussian noise with no periodic component.
+Time-lag, phase lag and coherence of light curves are also to be found out in case of crossspectra.
 
 The major chunk of the work would be to get the wrap the Lomb-Scargle class of astropy in a way that works with input types stingray.Lightcurve object, array of stingray.Lightcurve objects,Time array and EventList.
 
+The implementation of crossspectrum is to be done from scratch in Python as it only exists in matlab and fortran courtesy of Dr. Jeffrey D. Scargle([Studies in astronomical time series analysis. III-Fourier transforms, autocorrelation functions, and cross-correlation functions of unevenly spaced data](https://adsabs.harvard.edu/full/1989ApJ...343..874S)).
+
 ## Deliverables
 
-1. LombScargle class
-2. Consistent behaviour with PowerSpectrum and Crosspectrum classes on input of different types of data
-3. AveragedLombScargle class
+1. LombScarglePowerSpectrum class
+2. LSCrossspectrum class
+3. LSDynamicalPowerSpectrum
+4. Lomb Scargle module similar to fourier
 
 ## Description and Timeline
 
 Period                      | Description
 --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-May 4 - 28th                | Getting to know mentors, reading documentation, setup development environment, contributing fixes to smaller issues to get familiar with the codebase and getting up to speed with working on the project.
-May 29 - June 5th           | Creating sample implementations of various Lomb-Scargle Classes and evaluating physical correctness
-June 6th - June 12th        | Choosing an implementation and finalizing the API of the class
-June 13th - June 25th       | Making the class feature complete w.r.t PowerSpectrum class
-June 26th - July 1st        | Making the class feature complete w.r.t PowerSpectrum class and possibly making an AveragedLombScargle class depending if it is useful
-July 2nd - July 8th         | Writing Tests
-July 9th - July 13th        | Adding Type Hints
-July 10th - July 14th       | Midterm evaluation deadline
-July 14th - August 21st     | Buffer period and improving code quality and more testing
+May 4th - 28th              | Getting to know mentors, reading documentation, setup development environment, contributing fixes to smaller issues to get familiar with the codebase and getting up to speed with working on the project.
+May 29th - June 4th         | Translating the Lomb Scargle Crossspectrum implementation into python
+June 5th - June 19th        | Implementing the Lomb Scargle Crossspectrum class
+June 19th - July 2nd        | Implementing Lomb Scargle Power Spectrum class
+July 3rd - July 16th        | Implementing the Lomb Scargle Dynamical Power Spectrum class
+July 14th                   | Midterm evaluation deadline
+July 31st - August 13th     | JAX optimization
+July 31st - August 21st     | Buffer period and improving code quality, testing, and documentation
 August 21st - August 28th   | Final evaluation week
 August 28th - September 4th | Mentor final evaluation week
 
@@ -90,4 +115,4 @@ I have not participated previously in GSoC. I am not applying to any other proje
 
 ## Schedule availability
 
-I don't really have any plans for holidays during the time of the program. There are barely any holidays between my 4th and 5th sems which would be around 10-15 days in late August early September. I would be willing to work during these days as well if need be. I would have slightly reduced output from 13th July to Mid/Late August due to semester end exams. My window of maximum productivity would be from May 29th ~ June 25th. I would not like to put behind any work for the buffer period as it clashes with my semester end exams. I would most likely be to work at full productivity from roughly 11th August onward assuming exam schedule would be similar to current semester. I would try and cover the work of later weeks if any unforeseen circumstances arise.
+I don't really have any plans for holidays during the time of the program. There are barely any holidays between my 4th and 5th sems which would be around 10-15 days in late August early September. I would be willing to work during these days as well if need be. I would have slightly reduced output from 13th July to Mid/Late August due to semester end exams. My window of maximum productivity would be from May 29th ~ June 25th. I would not like to put behind any work for the buffer period as it clashes with my semester end exams. I would most likely be to work at full productivity from roughly 11th August onward assuming exam schedule would be similar to current semester. I would try and cover the work of later weeks early if any unforeseen circumstances arise.
