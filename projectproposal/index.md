@@ -10,7 +10,7 @@ StingraySoftware
 
 ## Summary
 
-Analyzing unevenly sampled data cannot be done with methods of the fourier domain. We use the lomb scargle domain to account for the unevenness of the data. I will be mainly implementing 3 classes, Lomb Scargle cross spectrum, power spectrum and dynamical power spectrum and in that order. I will be translating the implementation provided by Dr JD Scargle in MATLAB or FORTRAN into python. If the PSD arises as a special case of the CSD, then I would be reusing my CSD implementation otherwise I would be using the scipy.signal.LombScargle implementation to reduce development time. Later in the project after I complete the implementation of the 3 classes, I shall optimize the Lomb Scargle cross spectrum implementation by using JAX. Reason for choosing the scipy implementation is that it allows us to get an unnormalized PSD to which we can apply stingray's methoods of normalization and astropy's implementation does not have that option, and their normalizations are different from the ones used in stingray. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs. The crosspectrum class must be compatible statistic functions already existing in stingray such as the time lag,phase lag and coherence (which exist only for crossspectra).
+Analyzing unevenly sampled data cannot be done with methods of the fourier domain. We use the lomb scargle domain to account for the unevenness of the data. I will be mainly implementing 3 classes, Lomb Scargle cross spectrum, power spectrum and dynamical power spectrum and in that order. I will be translating the implementation provided by Dr JD Scargle in MATLAB or FORTRAN into python. If the PSD arises as a special case of the CSD, then I would be reusing my CSD implementation otherwise I would be using the scipy.signal.LombScargle implementation to reduce development time. The Lomb Scargle cross spectrum implementation can be optimized by using JAX. Reason for choosing the scipy implementation is that it allows us to get an unnormalized PSD to which we can apply stingray's methods of normalization and astropy's implementation does not have that option, and their normalizations are different from the ones used in stingray. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs. The crosspectrum class must be compatible with statistic functions already existing in stingray such as the time lag,phase lag and coherence (which exist only for crossspectra).
 
 ## Contributor Information
 
@@ -119,11 +119,13 @@ NOTE : This is a rough outline and the attributes and parameters may change depe
 
 ## Detailed Description
 
-The project involves time series analysis of unevenly sampled data. The goal is to create the classes that generates Lomb-Scargle Power spectrum, Cross spectrum and Dynamical Power spectrum of the data respectively and match these implementations with the structure of existing functionalities of Powerspectrum, Crosspectrum and Dynamical Power Spectrum classes as well as the normalisations performed by them.
+The project involves time series analysis of unevenly sampled data. The goal is to create the classes that generates Lomb-Scargle Power spectrum and Crosspectrum of the data respectively and match these implementations with the structure of existing functionalities of Powerspectrum and Crosspectrum classes as well as the normalisations performed by them.
 
-Time-lag, phase lag and coherence of light curves are also to be found out in case of crossspectra.
+Time-lag, phase lag and coherence of light curves are also to be found out in the case of cross spectra.
 
-The implementation of crossspectrum is to be done from scratch in Python as it only exists in matlab and fortran courtesy of Dr. Jeffrey D. Scargle ([Studies in astronomical time series analysis. III-Fourier transforms, autocorrelation functions, and cross-correlation functions of unevenly spaced data](https://adsabs.harvard.edu/full/1989ApJ...343..874S)).
+The implementation of cross spectrum is to be done from scratch in Python as it only exists in MATLAB and FORTRAN courtesy of Dr. Jeffrey D. Scargle ([Studies in astronomical time series analysis. III-Fourier transforms, autocorrelation functions, and cross-correlation functions of unevenly spaced data](https://adsabs.harvard.edu/full/1989ApJ...343..874S)).
+
+The implementation of power spectrum is not required since a compatible implementation exists in scipy.signal.LombScargle. We can refer to the original paper by Jeffrey D. Scargle [Studies in astronomical time series analysis. II-Statistical aspects of Spectral Analysis of Unevenly Spaced Data](https://adsabs.harvard.edu/full/1982ApJ...263..835S7)
 
 ## Deliverables
 
