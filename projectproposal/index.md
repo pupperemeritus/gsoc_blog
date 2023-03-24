@@ -10,7 +10,7 @@ StingraySoftware
 
 ## Summary
 
-Analyzing unevenly sampled data cannot be done with methods of the fourier domain. We use the lomb scargle domain to account for the unevenness of the data. I will be mainly implementing 3 classes, Lomb Scargle cross spectrum, power spectrum and dynamical power spectrum and in that order. I will be translating the implementation provided by Dr JD Scargle in MATLAB or FORTRAN into python. If the PSD arises as a special case of the CSD, then I would be reusing my CSD implementation otherwise I would be using the scipy.signal.LombScargle implementation to reduce development time. The Lomb Scargle cross spectrum implementation can be optimized by using JAX. Reason for choosing the scipy implementation is that it allows us to get an unnormalized PSD to which we can apply stingray's methods of normalization and astropy's implementation does not have that option, and their normalizations are different from the ones used in stingray. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs. The crosspectrum class must be compatible with statistic functions already existing in stingray such as the time lag,phase lag and coherence (which exist only for crossspectra).
+Analyzing unevenly sampled data cannot be done with methods of the fourier domain. We use the lomb scargle domain to account for the unevenness of the data. I will be mainly implementing 3 classes, Lomb Scargle cross spectrum core implementation, wrapper, power spectrum wrapper and in that order. I will be translating the implementation provided by Dr JD Scargle in MATLAB or FORTRAN into python. If the PSD arises as a special case of the CSD, then I would be reusing my CSD implementation otherwise I would be using the scipy.signal.LombScargle implementation to reduce development time. The Lomb Scargle cross spectrum implementation can be optimized by using JAX. Reason for choosing the scipy implementation is that it allows us to get an unnormalized PSD to which we can apply stingray's methods of normalization and astropy's implementation does not have that option, and their normalizations are different from the ones used in stingray. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs. The crosspectrum class must be compatible with statistic functions already existing in stingray such as the time lag,phase lag and coherence (which exist only for crossspectra).
 
 ## Contributor Information
 
@@ -44,31 +44,32 @@ I've always been interested in astronomy. I also delved into astrophotography re
 
 ### Proposed Structure
 
-Filename                    | Description
---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-LombScargle.py              | contains the translation of crossspectrum implementation into python
-LombScargleCrossspectrum.py | Using our custom crossspectrum implementation in LombScargle.py creating a class that can take in Light curve and eventlist data and create the cross spectrum
-LombScarglePowerSpectrum.py | using existing implementation in astropy creating the power spectrum or using our cross spectrum implementation if power spectrum arises as a special case of power spectrum
+Filename                                    | Description
+------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+utils.py(additions of new helper functions) | contains the translation of crossspectrum implementation into python
+LombScargle.py                              | Using our custom crossspectrum implementation in LombScargle.py creating a class that can take in Light curve and eventlist data and create the cross spectrum. Using existing implementation in scipy creating the power spectrum or using our cross spectrum implementation if power spectrum arises as a special case of cross spectrum
 
-### Lomb Scargle module
+### Additions to utils.py
 
-Containing the core computational parts. Translating the MATLAB or FORTRAN version of crossspectrum given by Dr. Jeffrey D Scargle into Python. Using JAX for improved speed after implementing in regular python.
+Adding the core computational parts. Translating the MATLAB or FORTRAN version of crossspectrum given by Dr. Jeffrey D Scargle into Python. Using JAX for improved speed after implementing in regular python.
 
-### Lomb Scargle Cross Spectrum
+### Lomb Scargle Cross Spectrum class
 
-Wraps the Lomb Scargle cross spectrum in the above LombScargle implementation. Handles inputs of two light curves, eventlists, timearray and light curve iterables. Needs to perform data validity checks and normalization(leahy/absolute rms/fractional rms).
+Wraps the Lomb Scargle cross spectrum in the above utils.py implementation. Handles inputs of two light curves, eventlists, timearray and light curve iterables. Needs to perform data validity checks and normalization(leahy/absolute rms/fractional rms).
 
 Class parameters
 
-Parameter   | Description                                       | Default
------------ | ------------------------------------------------- | --------------
-data1       | light curve or eventlist                          | None
-data2       | light curve or eventlist                          | None
-power_type  | real or complex power                             | real
-norm        | Normalization methods(frac RMS, abs RMS, leahy)   | Fractional RMS
-dt          | time resolution only needed for eventlist objects | None
-gti         | time intervals which have good data               | None
-skip_checks | flag to skip checks                               | False
+Parameter         | Description                                       | Default
+----------------- | ------------------------------------------------- | --------------
+data1             | light curve or eventlist                          | None
+data2             | light curve or eventlist                          | None
+power_type        | real or complex power                             | real
+norm              | Normalization methods(frac RMS, abs RMS, leahy)   | Fractional RMS
+dt                | time resolution only needed for eventlist objects | None
+gti               | time intervals which have good data               | None
+skip_checks       | flag to skip checks                               | False
+maximum frequency | maximum frequency                                 | None
+df                | frequency resolution                              | None
 
 Class attributes
 
@@ -77,7 +78,6 @@ Attribute   | Description
 freq        | array of mid bin frequencies that the lsft samples
 power       | array of cross spectra (complex numbers)
 power error | uncertainties in power
-df          | frequency resolution
 m           | the number of averages cross spectra amplitudes in each bin
 n           | the number of datapoints/time bins in one segment of the light curves
 k           | the rebinning scheme if object has been rebinned otherwise is set to 1
@@ -100,6 +100,7 @@ norm        | Normalization methods(frac RMS, abs RMS, leahy)   | Fractional RMS
 dt          | time resolution only needed for eventlist objects | None
 gti         | time intervals which have good data               | None
 skip_checks | flag to skip checks                               | False
+df          | frequency resolution                              | None
 
 Class attributes
 
@@ -108,7 +109,6 @@ Attribute   | Description
 freq        | array of mid bin frequencies that the lsft samples
 power       | array of cross spectra (complex numbers)
 power error | uncertainties in power
-df          | frequency resolution
 m           | the number of averages cross spectra amplitudes in each bin
 n           | the number of datapoints/time bins in one segment of the light curves
 k           | the rebinning scheme if object has been rebinned otherwise is set to 1
@@ -142,8 +142,8 @@ June 5th - June 19th        | Implementing the Lomb Scargle Crossspectrum class
 June 19th - July 2nd        | Implementing Lomb Scargle Power Spectrum class
 July 3rd - July 16th        | Implementing the Lomb Scargle Dynamical Power Spectrum class
 July 14th                   | Midterm evaluation deadline
-July 31st - August 13th     | JAX optimization
-August 13th - August 21st   | Buffer period and improving code quality, testing, and documentation
+July 31st - August 13th     | JAX optimization , tests and documentation : tests for the wrapper classes as well as the core implementation , documentation for the API and how to use the class
+August 13th - August 21st   | Buffer period and improving code quality
 August 21st - August 28th   | Final evaluation week
 August 28th - September 4th | Mentor final evaluation week
 
