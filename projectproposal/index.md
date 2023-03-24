@@ -10,7 +10,7 @@ StingraySoftware
 
 ## Summary
 
-Analyzing unevenly sampled data cannot be done with methods of the fourier domain. We use the lomb scargle domain to account for the unevenness of the data. I will be mainly implementing 3 classes, Lomb Scargle cross spectrum core implementation, wrapper, power spectrum wrapper and in that order. I will be translating the implementation provided by Dr JD Scargle in MATLAB or FORTRAN into python. If the PSD arises as a special case of the CSD, then I would be reusing my CSD implementation otherwise I would be using the scipy.signal.LombScargle implementation to reduce development time. The Lomb Scargle cross spectrum implementation can be optimized by using JAX. Reason for choosing the scipy implementation is that it allows us to get an unnormalized PSD to which we can apply stingray's methods of normalization and astropy's implementation does not have that option, and their normalizations are different from the ones used in stingray. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs. The crosspectrum class must be compatible with statistic functions already existing in stingray such as the time lag,phase lag and coherence (which exist only for crossspectra).
+Analyzing unevenly sampled data cannot be done with methods of the fourier domain. We use the lomb scargle domain to account for the unevenness of the data. I will be mainly implementing 3 classes, Lomb Scargle cross spectrum core implementation, wrapper, power spectrum wrapper and in that order. I will be translating the implementation provided by Dr JD Scargle in MATLAB or FORTRAN into python. If the PSD arises as a special case of the CSD, then I would be reusing my CSD implementation otherwise I would be using the scipy.signal.LombScargle implementation to reduce development time. The Lomb Scargle cross spectrum implementation can be optimized by using JAX. Reason for choosing the scipy implementation is that it allows us to get an unnormalized PSD to which we can apply stingray's methods of normalization and astropy's implementation does not have that option, and their normalizations are different from the ones used in stingray. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs. Extra parameter of maximum frequency is to be given as it cannot be inferred from the data as equal to 1/time between two data points. Further the frequency resolution cannot beb inferred due to the same reason The crosspectrum class must be compatible with statistic functions already existing in stingray such as the time lag,phase lag and coherence (which exist only for crossspectra) (if this turns out to not be possible then create new similar statistic functions).
 
 ## Contributor Information
 
@@ -38,7 +38,7 @@ I am an undergraduate student of Chaitanya Bharathi Institute of Technology stud
 
 ## Interest in Open Astronomy
 
-I've always been interested in astronomy. I also delved into astrophotography recently. I originally wanted to study astrophysics/astronomy along with computer science as my major and minor but the institutes in my country neither offer such flexibility nor the courses in one institute. I have done a few courses on coursera on astronomy such as Data Driven Astronomy and Analyzing The Universe. I am passionate about using and propogating open source software, and I feel this is a multi-faceted way of giving back to the community that I like so much. I feel my skill set is best suited for OpenAstronomy compared to any other project as I have a decent amount of domain as well as programming and software design knowledge. I am always looking to learn more. I view research work and work that aids in other's research as a noble pursuit. I hope OpenAstronomy will not only be my journey into the world of FOSS but also to research and helps me gain experience for higher studies.
+I've always been interested in astronomy. I also delved into astrophotography recently. I originally wanted to study astrophysics/astronomy along with computer science as my major and minor but the institutes in my country neither offer such flexibility nor the courses in one institute. I have done a few courses on coursera on astronomy such as Data Driven Astronomy and Analyzing The Universe. I am passionate about using and propogating open source software, and I feel this is a multi-faceted way of giving back to the community that I like so much. I feel my skill set is best suited for OpenAstronomy compared to any other project as I have a decent amount of domain as well as programming and software design knowledge. I am always looking to learn more. I view research work and work that aids in other's research as a noble pursuit. I hope OpenAstronomy will not only be my journey into the world of FOSS but also to research and it will help me gain experience for higher studies.
 
 ## My approach
 
@@ -59,17 +59,17 @@ Wraps the Lomb Scargle cross spectrum in the above utils.py implementation. Hand
 
 Class parameters
 
-Parameter         | Description                                       | Default
------------------ | ------------------------------------------------- | --------------
-data1             | light curve or eventlist                          | None
-data2             | light curve or eventlist                          | None
-power_type        | real or complex power                             | real
-norm              | Normalization methods(frac RMS, abs RMS, leahy)   | Fractional RMS
-dt                | time resolution only needed for eventlist objects | None
-gti               | time intervals which have good data               | None
-skip_checks       | flag to skip checks                               | False
-maximum frequency | maximum frequency                                 | None
-df                | frequency resolution                              | None
+Parameter   | Description                                                                                    | Default
+----------- | ---------------------------------------------------------------------------------------------- | -------------------------------------
+data1       | light curve or eventlist                                                                       | None
+data2       | light curve or eventlist                                                                       | None
+power_type  | real or complex power                                                                          | all
+norm        | Normalization methods(frac RMS, abs RMS, leahy)                                                | Fractional RMS
+dt          | time resolution only needed for eventlist objects                                              | Automatically selected sensible value
+gti         | time intervals which have good data (if not none overrides common gtis from both light curves) | Common gti from both light curves
+skip_checks | flag to skip checks                                                                            | False
+maxfreq     | maximum frequency to check for                                                                 | Automatically chosen sensible value
+df          | frequency resolution                                                                           | Automatically chosen sensible value
 
 Class attributes
 
@@ -92,15 +92,16 @@ With the help of scipy.signal.LombScargle, this class creates the power spectrum
 
 Class parameters
 
-Parameter   | Description                                       | Default
------------ | ------------------------------------------------- | --------------
-data        | light curve or eventlist                          | None
-power_type  | real or complex power                             | real
-norm        | Normalization methods(frac RMS, abs RMS, leahy)   | Fractional RMS
-dt          | time resolution only needed for eventlist objects | None
-gti         | time intervals which have good data               | None
-skip_checks | flag to skip checks                               | False
-df          | frequency resolution                              | None
+Parameter   | Description                                                                             | Default
+----------- | --------------------------------------------------------------------------------------- | -----------------------------------
+data        | light curve or eventlist                                                                | None
+power_type  | real or all powers                                                                      | all
+norm        | Normalization methods(frac RMS, abs RMS, leahy)                                         | Fractional RMS
+dt          | time resolution only needed for eventlist objects                                       | Automatically chosen sensible value
+gti         | time intervals which have good data (if not None overrides existing gti in light curve) | None
+skip_checks | flag to skip checks                                                                     | False
+df          | frequency resolution                                                                    | Automatically chosen sensible value
+maxfreq     | maximum frequency to check for                                                          | Automatically chosen sensible value
 
 Class attributes
 
@@ -112,8 +113,7 @@ power error | uncertainties in power
 m           | the number of averages cross spectra amplitudes in each bin
 n           | the number of datapoints/time bins in one segment of the light curves
 k           | the rebinning scheme if object has been rebinned otherwise is set to 1
-nphots1     | the total number of photons in light curve 1
-nphots2     | the total number of photons in light curve 2
+nphots      | the total number of photons in light curve
 
 NOTE : This is a rough outline and the attributes and parameters may change depending on further research at the time of implementation
 
