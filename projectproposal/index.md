@@ -50,21 +50,21 @@ Referring [Review paper by Jacob T. VanderPlas](https://doi.org/10.3847/1538-436
 
 The Lomb Scargle method uses the mean of the sampling intervals to account for the uneven sampling intervals. Lomb Scargle method is equivalently interpreted as a Fourier method as well as a least squares method. The generalized periodogram form ensures time shift invariance.
 
-The least squares approach works by minimizing the chi^2 test statistic of a function y(t,f) = A_f x sin(2 x pi x f x(t - phif)) where amplitude Af and phase phif vary with frequency. chi^2 = sum ((y_n - y(t_n;f))^2).
+The least squares approach works by minimizing the chi^2 test statistic of a function $$y(t;f) = A_f \sin(2\pi f(t-\phi_f)) \ where \ amplitude \ A_f \ and \ phase \ \phi_f \ vary \ with \ frequency.\ \chi^2 = \sum_n ((y_n - y(t_n;f))^2).$$
 
-The periodogram using this approach is given by $$ P(f) = \frac{\chi^2-\chi^2(f)}{2} where \chi^2(f) is the \chi^2 $$ test statistic for the given frequency and $$\chi^2 $$ is the non varying reference model.
+The periodogram using this approach is given by $$ P(f) = \frac{\chi^2-\chi^2(f)}{2} \ where \ \chi^2(f) \ is \ the \ \chi^2 $$ test statistic for the given frequency and $$\chi^2 $$ is the non varying reference model.
 
 The periodogram can also be derived by extending the classical Schuster periodogram by generalizing it to unevenly sampled data which comes from the fourier domain of methods.
 
 Given by $$ P(f) = \frac{1}{2} { \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2}{\sum_n\cos^2(2\pi f[t_n-\tau])} + \frac{(\sum_n{g_n\sin(2\pi f[t_n-\tau]))^2}}{\sum_n\sin^2(2\pi f[t_n-\tau])} } \ where \ \tau =\frac{1}{4\pi f} \tan^{-1} {\frac{\sum_n\sin(4\pi f_n)}{\sum_n{\cos(4\pi f_n)}}} $$
 
-We can modify the least squares approach to account for gaussian errors. Where chi^2 test statistic is modified as follows
+We can modify the least squares approach to account for gaussian errors. Where $$\chi^2$$ test statistic is modified as follows
 
-chi^2(f) = sum(((y_n - y_model(t_n;f)) / sigma_n)^2)
+$$ \chi^2(f) = \sum_n(\frac{(y_n - y_model(t_n;f))^2}{sigma_n^2}) $$
 
 Another important modification made is to add an offset term to the sinusoidal model at each frequency in the least squares approach.
 
-y_model(t;f) = y_0(f) + Af sin(2 x pi x f(t - tau))
+$$ y_model(t;f) = y_0(f) + A_f \sin(2\pi f(t-\tau)) $$
 
 The above can be further optimized by using the [optimizations introduced by William H. Press and George B. Rybicki](https://articles.adsabs.harvard.edu/pdf/1989ApJ...338..277P)
 
@@ -72,35 +72,35 @@ The optimizations basically include the following:
 
 - Simplifications of the following trigionometric sums if we define
 
-  S_y = sum(y_j x sin(omega x t_j))
+  $$S_y = \sum_j(y_j \sin(\omega t_j))$$
 
-  C_y = sum(y_j x cos(omega x t_j))
+  $$C_y = \sum_j(y_j \cos(\omega t_j))$$
 
-  S_2 = sum(sin(2 x omega x t_j))
+  $$S_2 = \sum_j(\sin(2 \omega t_j))$$
 
-  C_2 = sum(cos(2 x omega x t_j))
+  $$C_2 = \sum_j(\cos(2 \omega t_j))$$
 
 - Then we can replace
 
-  sum(y_j x cos(omega x (t_j - tau))) = C_y x cos(omega x tau) + S_y sin(omega x tau)
+  $$ \sum(y_j \cos(\omega (t_j - \tau))) = C_y \cos(\omega \tau) + S_y \sin(\omega \tau) $$
 
-  sum(y_j x sin(omega x (t_j - tau))) = C_y x sin(omega x tau) - C_y sin(omega x tau)
+  $$ \sum(y_j \sin(\omega (t_j - \tau))) = C_y \sin(\omega \tau) - C_y \sin(\omega \tau) $$
 
-  sum(cos^2(omega x (t_j - tau))) = 0.5 x (N + C_2 * cos(2 x omega x tau) + S_2 x sin(2 x omega x tau))
+  $$ \sum(\cos^2(\omega (t_j - \tau))) = 0.5 (N + C_2 * cos(2 \omega \tau) + S_2 \sin(2 \omega \\tau)) $$
 
-  sum(sin^2(omega x (t_j - tau))) = 0.5 x (N - C_2 * cos(2 x omega x tau) - S_2 x sin(2 x omega x tau))
+  $$ \sum(\sin^2(\omega (t_j - \tau))) = 0.5 (N - C_2 * cos(2 \omega \tau) - S_2 \sin(2 \omega \tau)) $$
 
-- Where omega is 2 x pi x f and N is the number of samples.
+- Where $$\omega\ is\ 2 \pi f\ and$$ N is the number of samples.
 
-- If the t_j's were evenly spaced then the above calculations could be performed by FFTs
+- If the $$t_j$$'s were evenly spaced then the above calculations could be performed by FFTs
 
-- Therefore we extrapolate the values at evenly spaced t_j's by using extrapolation weight which is the same as interpolation weight
+- Therefore we extrapolate the values at evenly spaced $$t_j$$'s by using extrapolation weight which is the same as interpolation weight
 
-  g(t) = sum(w_n(t) x g(t'_n)) where w_n(t) are interpolation weights and t'n is the extrapolated evenly spaced points
+  $$g(t) = \sum(w_n(t) g(\hat{t}_n))$$ where $$w_n(t)$$ are interpolation weights and $$\hat{t}n$$ is the extrapolated evenly spaced points
 
 - Our sum of interest
 
-  sum(h_n x g(t_n)) = sum_j(h_j[sum_k(w_k(t_j) x g(t'_k))])
+  $$ \sum(h_n g(t_n)) = \sum_j(h_j[\sum_k(w_k(t_j) g(\hat{t}_k))])$$
 
 ## My approach
 
