@@ -15,17 +15,11 @@ Analyzing unevenly sampled data cannot be done with methods of the fourier domai
 ## Contributor Information
 
 - Blog : <https://pupperemeritus.github.io/gsoc_blog/>
-
 - Name : Sri Guru Datta Pisupati
-
 - Email : pupperemeritus9@protonmail.com
-
 - Time-zone : +05:30 (IST)
-
 - Slack : Sri Guru Datta Pisupati
-
 - Github : pupperemeritus
-
 - PR Links :
 
   - [notebooks pull request 64](https://github.com/StingraySoftware/notebooks/pull/64)
@@ -40,6 +34,74 @@ I am an undergraduate student of Chaitanya Bharathi Institute of Technology stud
 
 I've always been interested in astronomy. I also delved into astrophotography recently. I originally wanted to study astrophysics/astronomy along with computer science as my major and minor but the institutes in my country neither offer such flexibility nor the courses in one institute. I have done a few courses on coursera on astronomy such as Data Driven Astronomy and Analyzing The Universe. I am passionate about using and propogating open source software, and I feel this is a multi-faceted way of giving back to the community that I like so much. I feel my skill set is best suited for OpenAstronomy compared to any other project as I have a decent amount of domain as well as programming and software design knowledge. I am always looking to learn more. I view research work and work that aids in other's research as a noble pursuit. I hope OpenAstronomy will not only be my journey into the world of FOSS but also to research and it will help me gain experience for higher studies.
 
+## Detailed Description
+
+The project involves time series analysis of unevenly sampled data. The goal is to create the classes that generates Lomb-Scargle Power spectrum and Crosspectrum of the data respectively and match these implementations with the structure of existing functionalities of Powerspectrum and Crosspectrum classes as well as the normalisations performed by them.
+
+Time-lag, phase lag and coherence of light curves are also to be found out in the case of cross spectra.
+
+The implementation of cross spectrum is to be done from scratch in Python as it only exists in MATLAB and FORTRAN courtesy of Dr. Jeffrey D. Scargle ([Studies in astronomical time series analysis. III-Fourier transforms, autocorrelation functions, and cross-correlation functions of unevenly spaced data](https://adsabs.harvard.edu/full/1989ApJ...343..874S)).
+
+The implementation of power spectrum is not required since a compatible implementation exists in scipy.signal.LombScargle. We can refer to the original paper by Jeffrey D. Scargle [Studies in astronomical time series analysis. II-Statistical aspects of Spectral Analysis of Unevenly Spaced Data](https://adsabs.harvard.edu/full/1982ApJ...263..835S7)
+
+## A deep dive into Lomb Scargle Algorithm and various optimizations
+
+Referring [Review paper by Jacob T. VanderPlas](https://doi.org/10.3847/1538-4365/aab766)
+
+The Lomb Scargle method uses the mean of the sampling intervals to account for the uneven sampling intervals. Lomb Scargle method is equivalently interpreted as a Fourier method as well as a least squares method. The generalized periodogram form ensures time shift invariance.
+
+The least squares approach works by minimizing the chi^2 test statistic of a function y(t,f) = A_f x sin(2 x pi x f x(t - phif)) where amplitude Af and phase phif vary with frequency. chi^2 = sum ((y_n - y(t_n;f))^2).
+
+The periodogram using this approach is given by $$ P(f) = \frac{\chi^2-\chi^2(f)}{2} where \chi^2(f) is the \chi^2 $$ test statistic for the given frequency and $$\chi^2 $$ is the non varying reference model.
+
+The periodogram can also be derived by extending the classical Schuster periodogram by generalizing it to unevenly sampled data which comes from the fourier domain of methods.
+
+Given by $$ P(f) = \frac{1}{2} { \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2}{\sum_n\cos^2(2\pi f[t_n-\tau])} + \frac{(\sum_n{g_n\sin(2\pi f[t_n-\tau]))^2}}{\sum_n\sin^2(2\pi f[t_n-\tau])} } \ where \ \tau =\frac{1}{4\pi f} \tan^{-1} {\frac{\sum_n\sin(4\pi f_n)}{\sum_n{\cos(4\pi f_n)}}} $$
+
+We can modify the least squares approach to account for gaussian errors. Where chi^2 test statistic is modified as follows
+
+chi^2(f) = sum(((y_n - y_model(t_n;f)) / sigma_n)^2)
+
+Another important modification made is to add an offset term to the sinusoidal model at each frequency in the least squares approach.
+
+y_model(t;f) = y_0(f) + Af sin(2 x pi x f(t - tau))
+
+The above can be further optimized by using the [optimizations introduced by William H. Press and George B. Rybicki](https://articles.adsabs.harvard.edu/pdf/1989ApJ...338..277P)
+
+The optimizations basically include the following:
+
+- Simplifications of the following trigionometric sums if we define
+
+  S_y = sum(y_j x sin(omega x t_j))
+
+  C_y = sum(y_j x cos(omega x t_j))
+
+  S_2 = sum(sin(2 x omega x t_j))
+
+  C_2 = sum(cos(2 x omega x t_j))
+
+- Then we can replace
+
+  sum(y_j x cos(omega x (t_j - tau))) = C_y x cos(omega x tau) + S_y sin(omega x tau)
+
+  sum(y_j x sin(omega x (t_j - tau))) = C_y x sin(omega x tau) - C_y sin(omega x tau)
+
+  sum(cos^2(omega x (t_j - tau))) = 0.5 x (N + C_2 * cos(2 x omega x tau) + S_2 x sin(2 x omega x tau))
+
+  sum(sin^2(omega x (t_j - tau))) = 0.5 x (N - C_2 * cos(2 x omega x tau) - S_2 x sin(2 x omega x tau))
+
+- Where omega is 2 x pi x f and N is the number of samples.
+
+- If the t_j's were evenly spaced then the above calculations could be performed by FFTs
+
+- Therefore we extrapolate the values at evenly spaced t_j's by using extrapolation weight which is the same as interpolation weight
+
+  g(t) = sum(w_n(t) x g(t'_n)) where w_n(t) are interpolation weights and t'n is the extrapolated evenly spaced points
+
+- Our sum of interest
+
+  sum(h_n x g(t_n)) = sum_j(h_j[sum_k(w_k(t_j) x g(t'_k))])
+
 ## My approach
 
 ### Proposed Structure
@@ -51,7 +113,7 @@ LombScargle.py                              | Using our custom crossspectrum imp
 
 ### Additions to utils.py
 
-Adding the core computational parts. Translating the MATLAB or FORTRAN version of crossspectrum given by Dr. Jeffrey D Scargle into Python. Using JAX for improved speed after implementing in regular python.
+Adding the core computational parts. Implementing the core computational crossspectrum algorithm referring to Dr Jeffrey D. Lomb scargle's paper. JAX for improved speed after implementing in regular python.
 
 ### Lomb Scargle Cross Spectrum class
 
@@ -116,16 +178,6 @@ k           | the rebinning scheme if object has been rebinned otherwise is set 
 nphots      | the total number of photons in light curve
 
 NOTE : This is a rough outline and the attributes and parameters may change depending on further research at the time of implementation
-
-## Detailed Description
-
-The project involves time series analysis of unevenly sampled data. The goal is to create the classes that generates Lomb-Scargle Power spectrum and Crosspectrum of the data respectively and match these implementations with the structure of existing functionalities of Powerspectrum and Crosspectrum classes as well as the normalisations performed by them.
-
-Time-lag, phase lag and coherence of light curves are also to be found out in the case of cross spectra.
-
-The implementation of cross spectrum is to be done from scratch in Python as it only exists in MATLAB and FORTRAN courtesy of Dr. Jeffrey D. Scargle ([Studies in astronomical time series analysis. III-Fourier transforms, autocorrelation functions, and cross-correlation functions of unevenly spaced data](https://adsabs.harvard.edu/full/1989ApJ...343..874S)).
-
-The implementation of power spectrum is not required since a compatible implementation exists in scipy.signal.LombScargle. We can refer to the original paper by Jeffrey D. Scargle [Studies in astronomical time series analysis. II-Statistical aspects of Spectral Analysis of Unevenly Spaced Data](https://adsabs.harvard.edu/full/1982ApJ...263..835S7)
 
 ## Deliverables
 
