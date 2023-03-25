@@ -50,13 +50,15 @@ Referring [Review paper by Jacob T. VanderPlas](https://doi.org/10.3847/1538-436
 
 The Lomb Scargle method uses the mean of the sampling intervals to account for the uneven sampling intervals. Lomb Scargle method is equivalently interpreted as a Fourier method as well as a least squares method. The generalized periodogram form ensures time shift invariance.
 
-The least squares approach works by minimizing the chi^2 test statistic of a function $$y(t;f) = A_f \sin(2\pi f(t-\phi_f)) \ where \ amplitude \ A_f \ and \ phase \ \phi_f \ vary \ with \ frequency.\ \chi^2 = \sum_n ((y_n - y(t_n;f))^2).$$
+The least squares approach works by minimizing the chi^2 test statistic of a function $$y(t;f) = A_f \sin(2\pi f(t-\phi_f))$$ where amplitude $$ A_f $$ and phase $$ \phi_f $$ vary with frequency.
 
-The periodogram using this approach is given by $$ P(f) = \frac{\chi^2-\chi^2(f)}{2} \ where \ \chi^2(f) \ is \ the \ \chi^2 $$ test statistic for the given frequency and $$\chi^2 $$ is the non varying reference model.
+$$ \chi^2 = \sum_n ((y_n - y(t_n;f))^2).$$
+
+The periodogram using this approach is given by $$ P(f) = \frac{\chi^2-\chi^2(f)}{2} $$ where $$\chi^2(f)$$ is the $$\chi^2 $$ test statistic for the given frequency and $$\chi^2 $$ is the non varying reference model.
 
 The periodogram can also be derived by extending the classical Schuster periodogram by generalizing it to unevenly sampled data which comes from the fourier domain of methods.
 
-Given by $$ P(f) = \frac{1}{2} ({ \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2}{\sum_n\cos^2(2\pi f[t_n-\tau])} + \frac{(\sum_n{g_n\sin(2\pi f[t_n-\tau]))^2} {\sum_n\sin^2(2\pi f[t_n-\tau])} }) $$ where $$ \ \tau =\frac{1}{4\pi f} \tan^{-1} {\frac{\sum_n\sin(4\pi f_n)}{\sum_n{\cos(4\pi f_n)}}} $$
+Given by $$ P(f) = \frac{1}{2} ({ \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2}{\sum_n\cos^2(2\pi f[t_n-\tau])} + \frac{(\sum_ng_n\sin(2\pi f[t_n-\tau]))^2} {\sum_n\sin^2(2\pi f[t_n-\tau])} }) $$ where $$ \ \tau =\frac{1}{4\pi f} \tan^{-1} {\frac{\sum_n\sin(4\pi f_n)}{\sum_n{\cos(4\pi f_n)}}} $$
 
 We can modify the least squares approach to account for gaussian errors. Where $$\chi^2$$ test statistic is modified as follows
 
