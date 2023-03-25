@@ -60,11 +60,11 @@ Given by $$ P(f) = \frac{1}{2} { \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2}{\
 
 We can modify the least squares approach to account for gaussian errors. Where $$\chi^2$$ test statistic is modified as follows
 
-$$ \chi^2(f) = \sum_n(\frac{(y_n - y_model(t_n;f))^2}{\sigma_n^2}) $$
+$$ \chi^2(f) = \sum_n(\frac{(y_n - y_{model}(t_n;f))^2}{\sigma_n^2}) $$
 
 Another important modification made is to add an offset term to the sinusoidal model at each frequency in the least squares approach.
 
-$$ y_model(t;f) = y_0(f) + A_f \sin(2\pi f(t-\tau)) $$
+$$ y_{model}(t;f) = y_0(f) + A_f \sin(2\pi f(t-\tau)) $$
 
 The above can be further optimized by using the [optimizations introduced by William H. Press and George B. Rybicki](https://articles.adsabs.harvard.edu/pdf/1989ApJ...338..277P)
 
