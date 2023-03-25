@@ -60,7 +60,7 @@ Given by $$ P(f) = \frac{1}{2} { \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2}{\
 
 We can modify the least squares approach to account for gaussian errors. Where $$\chi^2$$ test statistic is modified as follows
 
-$$ \chi^2(f) = \sum_n(\frac{(y_n - y_model(t_n;f))^2}{sigma_n^2}) $$
+$$ \chi^2(f) = \sum_n(\frac{(y_n - y_model(t_n;f))^2}{\sigma_n^2}) $$
 
 Another important modification made is to add an offset term to the sinusoidal model at each frequency in the least squares approach.
 
@@ -82,13 +82,13 @@ The optimizations basically include the following:
 
 - Then we can replace
 
-  $$ \sum(y_j \cos(\omega (t_j - \tau))) = C_y \cos(\omega \tau) + S_y \sin(\omega \tau) $$
+  $$ \sum_j(y_j \cos(\omega (t_j - \tau))) = C_y \cos(\omega \tau) + S_y \sin(\omega \tau) $$
 
-  $$ \sum(y_j \sin(\omega (t_j - \tau))) = C_y \sin(\omega \tau) - C_y \sin(\omega \tau) $$
+  $$ \sum_j(y_j \sin(\omega (t_j - \tau))) = S_y \sin(\omega \tau) - C_y \sin(\omega \tau) $$
 
-  $$ \sum(\cos^2(\omega (t_j - \tau))) = 0.5 (N + C_2 cos(2 \omega \tau) + S_2 \sin(2 \omega \tau)) $$
+  $$ \sum_j(\cos^2(\omega (t_j - \tau))) = 0.5 (N + C_2 \cos(2 \omega \tau) + S_2 \sin(2 \omega \tau)) $$
 
-  $$ \sum(\sin^2(\omega (t_j - \tau))) = 0.5 (N - C_2 cos(2 \omega \tau) - S_2 \sin(2 \omega \tau)) $$
+  $$ \sum_j(\sin^2(\omega (t_j - \tau))) = 0.5 (N - C_2 \cos(2 \omega \tau) - S_2 \sin(2 \omega \tau)) $$
 
 - Where $$\omega\ is\ 2 \pi f\ and$$ N is the number of samples.
 
@@ -96,13 +96,13 @@ The optimizations basically include the following:
 
 - Therefore we extrapolate the values at evenly spaced $$t_j$$'s by using extrapolation weight which is the same as interpolation weight
 
-  $$g(t) = \sum(w_n(t) g(\hat{t}_n))$$ where $$w_n(t)$$ are interpolation weights and $$\hat{t}n$$ is the extrapolated evenly spaced points
+  $$g(t) = \sum_n(w_n(t) g(\hat{t}_n))$$ where $$w_n(t)$$ are interpolation weights and $$\hat{t}n$$ is the extrapolated evenly spaced points
 
 - Our sum of interest
 
-  $$ \sum(h_n g(t_n)) = \sum_j(h_j[\sum_k(w_k(t_j) g(\hat{t}_k))])$$
+  $$ \sum_n(y_n g(t_n)) = \sum_j(y_j[\sum_k(w_k(t_j) g(\hat{t}_k))])$$
 
-## My approach
+- ## My approach
 
 ### Proposed Structure
 
