@@ -56,7 +56,7 @@ The periodogram using this approach is given by $$ P(f) = \frac{\chi^2-\chi^2(f)
 
 The periodogram can also be derived by extending the classical Schuster periodogram by generalizing it to unevenly sampled data which comes from the fourier domain of methods.
 
-Given by $$ P(f) = \frac{1}{2} { \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2}{\sum_n\cos^2(2\pi f[t_n-\tau])} + \frac{(\sum_n{g_n\sin(2\pi f[t_n-\tau]))^2}}{\sum_n\sin^2(2\pi f[t_n-\tau])} } \ where \ \tau =\frac{1}{4\pi f} \tan^{-1} {\frac{\sum_n\sin(4\pi f_n)}{\sum_n{\cos(4\pi f_n)}}} $$
+Given by $$ P(f) = \frac{1}{2} { \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2}{\sum_n\cos^2(2\pi f[t_n-\tau])} + \frac{(\sum_n{g_n\sin(2\pi f[t_n-\tau]))^2}}{\sum_n\sin^2(2\pi f[t_n-\tau])} } $$ where $$ \ \tau =\frac{1}{4\pi f} \tan^{-1} {\frac{\sum_n\sin(4\pi f_n)}{\sum_n{\cos(4\pi f_n)}}} $$
 
 We can modify the least squares approach to account for gaussian errors. Where $$\chi^2$$ test statistic is modified as follows
 
