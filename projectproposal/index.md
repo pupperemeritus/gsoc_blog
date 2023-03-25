@@ -86,9 +86,9 @@ The optimizations basically include the following:
 
   $$ \sum(y_j \sin(\omega (t_j - \tau))) = C_y \sin(\omega \tau) - C_y \sin(\omega \tau) $$
 
-  $$ \sum(\cos^2(\omega (t_j - \tau))) = 0.5 (N + C_2 * cos(2 \omega \tau) + S_2 \sin(2 \omega \\tau)) $$
+  $$ \sum(\cos^2(\omega (t_j - \tau))) = 0.5 (N + C_2 cos(2 \omega \tau) + S_2 \sin(2 \omega \tau)) $$
 
-  $$ \sum(\sin^2(\omega (t_j - \tau))) = 0.5 (N - C_2 * cos(2 \omega \tau) - S_2 \sin(2 \omega \tau)) $$
+  $$ \sum(\sin^2(\omega (t_j - \tau))) = 0.5 (N - C_2 cos(2 \omega \tau) - S_2 \sin(2 \omega \tau)) $$
 
 - Where $$\omega\ is\ 2 \pi f\ and$$ N is the number of samples.
 
