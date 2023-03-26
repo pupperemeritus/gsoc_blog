@@ -224,7 +224,7 @@ July 31st - August 13th        | JAX optimization , tests and documentation : te
 August 13th - August 21st      | Buffer period and improving code quality
 August 21st - August 28th      | Final evaluation week
 August 28th - September 4th    | Mentor final evaluation week
-September 5th - September 24th | Buffer period comprehensive tests and documentation
+September 5th - September 24th | Buffer period, comprehensive tests and documentation
 
 ## GSoC
 
