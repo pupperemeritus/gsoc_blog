@@ -58,9 +58,9 @@ The periodogram using this approach is given by $$ P(f) = \frac{\chi^2-\chi^2(f)
 
 The periodogram can also be derived by extending the classical Schuster periodogram by generalizing it to unevenly sampled data which comes from the fourier domain of methods.
 
-Given by $$ P(f) = \frac{1}{2} ({ \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2}{\sum_n\cos^2(2\pi f[t_n-\tau])} + \frac{(\sum_ng_n\sin(2\pi f[t_n-\tau]))^2} {\sum_n\sin^2(2\pi f[t_n-\tau])} }) $$ where $$ \ \tau =\frac{1}{4\pi f} \tan^{-1} {\frac{\sum_n\sin(4\pi f_n)}{\sum_n{\cos(4\pi f_n)}}} $$
+Given by $$ P(f) = \frac{1}{2} {{ \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2} {\sum_n\cos^2(2\pi f[t_n-\tau])} + \frac{(\sum_ng_n\sin(2\pi f[t_n-\tau]))^2} {\sum_n\sin^2(2\pi f[t_n-\tau])} }} $$ where $$ \ \tau =\frac{1}{4\pi f} \tan^{-1} {\frac{\sum_n\sin(4\pi f_n)}{\sum_n{\cos(4\pi f_n)}}} $$
 
-We can modify the least squares approach to account for Gaussian errors. Where $$\chi^2$$ test statistic is modified as follows
+We can modify the least squares approach to account for Gaussian errors. Where $$ \chi^2 $$ test statistic is modified as follows
 
 $$ \chi^2(f) = \sum_n(\frac{(y_n - y_{model}(t_n;f))^2}{\sigma_n^2}) $$
 
@@ -78,23 +78,23 @@ The optimizations basically include the following:
 
 - Simplifications of the following trigionometric sums if we define
 
-  $$S_y = \sum_jy_j \sin(\omega t_j)$$
+  $$S_y = \sum_j y_j \sin(\omega t_j)$$
 
-  $$C_y = \sum_jy_j \cos(\omega t_j)$$
+  $$C_y = \sum_j y_j \cos(\omega t_j)$$
 
-  $$S_2 = \sum_j\sin(2 \omega t_j)$$
+  $$S_2 = \sum_j \sin(2 \omega t_j)$$
 
-  $$C_2 = \sum_j\cos(2 \omega t_j)$$
+  $$C_2 = \sum_j \cos(2 \omega t_j)$$
 
 - Then we can replace
 
-  $$ \sum_jy_j \cos(\omega (t_j - \tau)) = C_y \cos(\omega \tau) + S_y \sin(\omega \tau) $$
+  $$ \sum_j y_j \cos(\omega (t_j - \tau)) = C_y \cos(\omega \tau) + S_y \sin(\omega \tau) $$
 
-  $$ \sum_jy_j \sin(\omega (t_j - \tau)) = S_y \sin(\omega \tau) - C_y \sin(\omega \tau) $$
+  $$ \sum_j y_j \sin(\omega (t_j - \tau)) = S_y \sin(\omega \tau) - C_y \sin(\omega \tau) $$
 
-  $$ \sum_j\cos^2(\omega (t_j - \tau)) = 0.5 (N + C_2 \cos(2 \omega \tau) + S_2 \sin(2 \omega \tau)) $$
+  $$ \sum_j \cos^2(\omega (t_j - \tau)) = 0.5 (N + C_2 \cos(2 \omega \tau) + S_2 \sin(2 \omega \tau)) $$
 
-  $$ \sum_j\sin^2(\omega (t_j - \tau)) = 0.5 (N - C_2 \cos(2 \omega \tau) - S_2 \sin(2 \omega \tau)) $$
+  $$ \sum_j \sin^2(\omega (t_j - \tau)) = 0.5 (N - C_2 \cos(2 \omega \tau) - S_2 \sin(2 \omega \tau)) $$
 
 - Where $$\omega\ is\ 2 \pi f\ and$$ N is the number of samples.
 
@@ -102,11 +102,11 @@ The optimizations basically include the following:
 
 - Therefore we extirpolate the values at evenly spaced $$t_j$$'s by using extirpolation weight which is the same as interpolation weight
 
-  $$g(t) = \sum_n(w_n(t) g(\hat{t}_n))$$ where $$w_n(t)$$ are interpolation weights and $$\hat{t}n$$ is the extirpolated evenly spaced points
+  $$g(t) = \sum_n w_n(t) g(\hat{t}_n)$$ where $$w_n(t)$$ are interpolation weights and $$ \hat{t}_n $$ is the extirpolated evenly spaced points
 
 - Our sum of interest
 
-  $$ \sum_n(y_n g(t_n)) \approx \sum_j(y_j[\sum_k(w_k(t_j) g(\hat{t}_k))]) = \sum_k\sum_jh_jw_k(t_j) \equiv \sum_k\hat{h}_kg(\hat{t}_k)$$ where $$ \hat{h}_k = \sum_jh_jw_k(t_j) $$
+  $$ \sum_n y_n g(t_n) \approx \sum_j y_j[\sum_k(w_k(t_j) g(\hat{t}_k))] = \sum_k\sum_j h_j w_k(t_j) \equiv \sum_k \hat{h}_kg(\hat{t}_k)$$ where $$ \hat{h}_k = \sum_j h_j w_k(t_j) $$
 
 The following are the practical considerations when implementing the method
 
