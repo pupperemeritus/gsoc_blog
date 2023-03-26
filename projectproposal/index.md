@@ -68,6 +68,10 @@ Another important modification made is to add an offset term to the sinusoidal m
 
 $$ y_{model}(t;f) = y_0(f) + A_f \sin(2\pi f(t-\tau)) $$
 
+The $$ y_model $$ can be further generalized by adding K - 1 terms to it.
+
+$$ y_model(t;f) = A_f^0 + \sum{K}_{k=1} A_f^{(k)} \sin(2\pi kf(t-\phi_f^k)) $$
+
 The above can be further optimized by using the [optimizations introduced by William H. Press and George B. Rybicki](https://articles.adsabs.harvard.edu/pdf/1989ApJ...338..277P)
 
 The optimizations basically include the following:
@@ -96,15 +100,35 @@ The optimizations basically include the following:
 
 - If the $$t_j$$'s were evenly spaced then the above calculations could be performed by FFTs
 
-- Therefore we extrapolate the values at evenly spaced $$t_j$$'s by using extrapolation weight which is the same as interpolation weight
+- Therefore we extirpolate the values at evenly spaced $$t_j$$'s by using extirpolation weight which is the same as interpolation weight
 
-  $$g(t) = \sum_n(w_n(t) g(\hat{t}_n))$$ where $$w_n(t)$$ are interpolation weights and $$\hat{t}n$$ is the extrapolated evenly spaced points
+  $$g(t) = \sum_n(w_n(t) g(\hat{t}_n))$$ where $$w_n(t)$$ are interpolation weights and $$\hat{t}n$$ is the extirpolated evenly spaced points
 
 - Our sum of interest
 
-  $$ \sum_n(y_n g(t_n)) = \sum_j(y_j[\sum_k(w_k(t_j) g(\hat{t}_k))])$$
+  $$ \sum_n(y_n g(t_n)) \approx \sum_j(y_j[\sum_k(w_k(t_j) g(\hat{t}_k))]) = \sum_k\sum_jh_jw_k(t_j) \equiv \sum_k\hat{h}_kg(\hat{t}_k)$$ where $$ hat{h}_k = \sum_jh_jw_k(t_j)
 
-- ## My approach
+The following are the practical considerations when implementing the method
+
+- Frequency limits and grid spacing must be chosen carefully. The low frequency limit is often chosen to be 0 for the sake of convenience but can be set to $$\frac{1}{T}$$ where T is the total span of the time series. The high frequency limit can be calculated by finding the true Nyquist frequency or pseudo Nyquist limit based on careful scrutiny of the window function.
+
+- The interaction of the signal, convolution cauused by survey window and noise in the data, the largest peak in the periodogram may correspond to an alias of the true frequency
+
+- The peak may correspond to a higher harmonic of the fundamental frequency which itself is subject to the above aliasing
+
+- The cross spectrum is computed using the Lomb Scargle Fourier Transform.
+
+  $$ P_{XY} = FT_x(\omega)FT_y^{*}(\omega) $$
+
+  $$ FT_x(\omega) = F_0 \sum(A X_n \cos(\omega t_n' + i B X_n \sin(\omega t_n'))) $$
+
+  Which can be simplified by taking $$ X_i = 1 $$
+
+  $$ FT_x(\omega) = F_0 \sum(A \cos(\omega t_n' + i B \sin(\omega t_n'))) $$
+
+  We can compute this quite quickly using FFTs
+
+## My approach
 
 ### Proposed Structure
 
@@ -188,18 +212,19 @@ NOTE : This is a rough outline and the attributes and parameters may change depe
 
 ## Description and Timeline
 
-Period                      | Description
---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-May 4th - 28th              | Getting to know mentors, reading documentation, setup development environment, contributing fixes to smaller issues to get familiar with the codebase and getting up to speed with working on the project.
-May 29th - June 4th         | Translating the Lomb Scargle Crossspectrum implementation into python
-June 5th - June 19th        | Implementing the Lomb Scargle Crossspectrum class
-June 19th - July 2nd        | Implementing Lomb Scargle Power Spectrum class
-July 3rd - July 16th        | Implementing the Lomb Scargle Dynamical Power Spectrum class
-July 14th                   | Midterm evaluation deadline
-July 31st - August 13th     | JAX optimization , tests and documentation : tests for the wrapper classes as well as the core implementation , documentation for the API and how to use the class
-August 13th - August 21st   | Buffer period and improving code quality
-August 21st - August 28th   | Final evaluation week
-August 28th - September 4th | Mentor final evaluation week
+Period                         | Description
+------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+May 4th - 28th                 | Getting to know mentors, reading documentation, setup development environment, contributing fixes to smaller issues to get familiar with the codebase and getting up to speed with working on the project.
+May 29th - June 4th            | Implementing the Lomb Scargle Crossspectrum
+June 5th - June 19th           | Implementing the Lomb Scargle Crossspectrum class
+June 19th - July 2nd           | Implementing Lomb Scargle Power Spectrum class
+July 3rd - July 16th           | Implementing the helper functions
+July 14th                      | Midterm evaluation deadline
+July 31st - August 13th        | JAX optimization , tests and documentation : tests for the wrapper classes as well as the core implementation , documentation for the API and how to use the class
+August 13th - August 21st      | Buffer period and improving code quality
+August 21st - August 28th      | Final evaluation week
+August 28th - September 4th    | Mentor final evaluation week
+September 5th - September 24th | Buffer comprehensive tests and documentation
 
 ## GSoC
 
