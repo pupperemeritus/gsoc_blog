@@ -120,7 +120,7 @@ The following are the practical considerations when implementing the method
 
   $$ P_{XY} = FT_x(\omega)FT_y^{*}(\omega) $$
 
-  $$ FT_x(\omega) = F_0 \sum(A X_n \cos(\omega t_n' + i B X_n \sin(\omega t_n'))) $$
+  $$ FT_x(\omega) = F_0 \sum(A X_n \cos(\omega t_n') + i B X_n \sin(\omega t_n')) $$
 
   Which can be simplified by taking $$ X_i = 1 $$
 
