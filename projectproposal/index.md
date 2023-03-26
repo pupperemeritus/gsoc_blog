@@ -44,7 +44,7 @@ The implementation of cross spectrum is to be done from scratch in Python as it 
 
 The implementation of power spectrum is not required since a compatible implementation exists in scipy.signal.LombScargle. We can refer to the original paper by Jeffrey D. Scargle [Studies in astronomical time series analysis. II-Statistical aspects of Spectral Analysis of Unevenly Spaced Data](https://adsabs.harvard.edu/full/1982ApJ...263..835S7)
 
-## A deep dive into Lomb Scargle Algorithm and various optimizations
+## A deep dive into Lomb Scargle Method and various optimizations
 
 Referring [Review paper by Jacob T. VanderPlas](https://doi.org/10.3847/1538-4365/aab766)
 
@@ -70,7 +70,7 @@ $$ y_{model}(t;f) = y_0(f) + A_f \sin(2\pi f(t-\tau)) $$
 
 The $$ y_model $$ can be further generalized by adding K - 1 terms to it.
 
-$$ y_model(t;f) = A_f^0 + \sum{K}_{k=1} A_f^{(k)} \sin(2\pi kf(t-\phi_f^k)) $$
+$$ y_{model}(t;f) = A_f^0 + \sum{K}_{k=1} A_f^{k} \sin(2\pi kf(t-\phi_f^k)) $$
 
 The above can be further optimized by using the [optimizations introduced by William H. Press and George B. Rybicki](https://articles.adsabs.harvard.edu/pdf/1989ApJ...338..277P)
 
@@ -78,23 +78,23 @@ The optimizations basically include the following:
 
 - Simplifications of the following trigionometric sums if we define
 
-  $$S_y = \sum_j(y_j \sin(\omega t_j))$$
+  $$S_y = \sum_jy_j \sin(\omega t_j)$$
 
-  $$C_y = \sum_j(y_j \cos(\omega t_j))$$
+  $$C_y = \sum_jy_j \cos(\omega t_j)$$
 
-  $$S_2 = \sum_j(\sin(2 \omega t_j))$$
+  $$S_2 = \sum_j\sin(2 \omega t_j)$$
 
-  $$C_2 = \sum_j(\cos(2 \omega t_j))$$
+  $$C_2 = \sum_j\cos(2 \omega t_j)$$
 
 - Then we can replace
 
-  $$ \sum_j(y_j \cos(\omega (t_j - \tau))) = C_y \cos(\omega \tau) + S_y \sin(\omega \tau) $$
+  $$ \sum_jy_j \cos(\omega (t_j - \tau)) = C_y \cos(\omega \tau) + S_y \sin(\omega \tau) $$
 
-  $$ \sum_j(y_j \sin(\omega (t_j - \tau))) = S_y \sin(\omega \tau) - C_y \sin(\omega \tau) $$
+  $$ \sum_jy_j \sin(\omega (t_j - \tau)) = S_y \sin(\omega \tau) - C_y \sin(\omega \tau) $$
 
-  $$ \sum_j(\cos^2(\omega (t_j - \tau))) = 0.5 (N + C_2 \cos(2 \omega \tau) + S_2 \sin(2 \omega \tau)) $$
+  $$ \sum_j\cos^2(\omega (t_j - \tau)) = 0.5 (N + C_2 \cos(2 \omega \tau) + S_2 \sin(2 \omega \tau)) $$
 
-  $$ \sum_j(\sin^2(\omega (t_j - \tau))) = 0.5 (N - C_2 \cos(2 \omega \tau) - S_2 \sin(2 \omega \tau)) $$
+  $$ \sum_j\sin^2(\omega (t_j - \tau)) = 0.5 (N - C_2 \cos(2 \omega \tau) - S_2 \sin(2 \omega \tau)) $$
 
 - Where $$\omega\ is\ 2 \pi f\ and$$ N is the number of samples.
 
@@ -106,13 +106,13 @@ The optimizations basically include the following:
 
 - Our sum of interest
 
-  $$ \sum_n(y_n g(t_n)) \approx \sum_j(y_j[\sum_k(w_k(t_j) g(\hat{t}_k))]) = \sum_k\sum_jh_jw_k(t_j) \equiv \sum_k\hat{h}_kg(\hat{t}_k)$$ where $$ hat{h}_k = \sum_jh_jw_k(t_j)
+  $$ \sum_n(y_n g(t_n)) \approx \sum_j(y_j[\sum_k(w_k(t_j) g(\hat{t}_k))]) = \sum_k\sum_jh_jw_k(t_j) \equiv \sum_k\hat{h}_kg(\hat{t}_k)$$ where $$ hat{h}_k = \sum_jh_jw_k(t_j) $$
 
 The following are the practical considerations when implementing the method
 
 - Frequency limits and grid spacing must be chosen carefully. The low frequency limit is often chosen to be 0 for the sake of convenience but can be set to $$\frac{1}{T}$$ where T is the total span of the time series. The high frequency limit can be calculated by finding the true Nyquist frequency or pseudo Nyquist limit based on careful scrutiny of the window function.
 
-- The interaction of the signal, convolution cauused by survey window and noise in the data, the largest peak in the periodogram may correspond to an alias of the true frequency
+- The interaction of the signal, convolution caused by survey window and noise in the data, the largest peak in the periodogram may correspond to an alias of the true frequency
 
 - The peak may correspond to a higher harmonic of the fundamental frequency which itself is subject to the above aliasing
 
@@ -120,11 +120,11 @@ The following are the practical considerations when implementing the method
 
   $$ P_{XY} = FT_x(\omega)FT_y^{*}(\omega) $$
 
-  $$ FT_x(\omega) = F_0 \sum(A X_n \cos(\omega t_n') + i B X_n \sin(\omega t_n')) $$
+  $$ FT_x(\omega) = F_0 \sumA X_n \cos(\omega t_n') + i B X_n \sin(\omega t_n') $$
 
   Which can be simplified by taking $$ X_i = 1 $$
 
-  $$ FT_x(\omega) = F_0 \sum(A \cos(\omega t_n' + i B \sin(\omega t_n'))) $$
+  $$ FT_x(\omega) = F_0 \sumA \cos(\omega t_n') + i B \sin(\omega t_n') $$
 
   We can compute this quite quickly using FFTs
 
@@ -133,9 +133,9 @@ The following are the practical considerations when implementing the method
 ### Proposed Structure
 
 Filename                                    | Description
-------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-utils.py(additions of new helper functions) | contains the translation of crossspectrum implementation into python
-LombScargle.py                              | Using our custom crossspectrum implementation in LombScargle.py creating a class that can take in Light curve and eventlist data and create the cross spectrum. Using existing implementation in scipy creating the power spectrum or using our cross spectrum implementation if power spectrum arises as a special case of cross spectrum
+------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+utils.py(additions of new helper functions) | contains the crossspectrum implementation
+LombScargle.py                              | Using our custom crossspectrum implementation in LombScargle.py creating a class that can take in Light curve and eventlist data and create the cross spectrum. Using existing implementation in scipy creating the power spectrum or using our cross spectrum implementation if power spectrum arises as a special case of cross spectrum or make one from scratch
 
 ### Additions to utils.py
 
@@ -143,7 +143,7 @@ Adding the core computational parts. Implementing the core computational crosssp
 
 ### Lomb Scargle Cross Spectrum class
 
-Wraps the Lomb Scargle cross spectrum in the above utils.py implementation. Handles inputs of two light curves, eventlists, timearray and light curve iterables. Needs to perform data validity checks and normalisation(leahy/absolute rms/fractional rms).
+Wraps the Lomb Scargle cross spectrum in the above utils.py implementation. Handles input of two light curves, eventlists, timearray and light curve iterable. Needs to perform data validity checks and normalisation(leahy/absolute rms/fractional rms).
 
 Class parameters
 
@@ -167,7 +167,7 @@ freq        | array of mid bin frequencies that the lsft samples
 power       | array of cross spectra (complex numbers)
 power error | uncertainties in power
 m           | the number of averages cross spectra amplitudes in each bin
-n           | the number of datapoints/time bins in one segment of the light curves
+n           | the number of data points/time bins in one segment of the light curves
 k           | the rebinning scheme if object has been rebinned otherwise is set to 1
 nphots1     | the total number of photons in light curve 1
 nphots2     | the total number of photons in light curve 2
@@ -199,7 +199,7 @@ freq        | array of mid bin frequencies that the lsft samples
 power       | array of cross spectra (complex numbers)
 power error | uncertainties in power
 m           | the number of averages cross spectra amplitudes in each bin
-n           | the number of datapoints/time bins in one segment of the light curves
+n           | the number of data points/time bins in one segment of the light curves
 k           | the rebinning scheme if object has been rebinned otherwise is set to 1
 nphots      | the total number of photons in light curve
 
@@ -220,7 +220,7 @@ June 5th - June 19th           | Implementing the Lomb Scargle Crossspectrum cla
 June 19th - July 2nd           | Implementing Lomb Scargle Power Spectrum class
 July 3rd - July 16th           | Implementing the helper functions
 July 14th                      | Midterm evaluation deadline
-July 31st - August 13th        | JAX optimization , tests and documentation : tests for the wrapper classes as well as the core implementation , documentation for the API and how to use the class
+July 31st - August 13th        | JAX optimization, tests and documentation : tests for the wrapper classes as well as the core implementation , documentation for the API and how to use the class
 August 13th - August 21st      | Buffer period and improving code quality
 August 21st - August 28th      | Final evaluation week
 August 28th - September 4th    | Mentor final evaluation week
@@ -232,4 +232,4 @@ I have not participated previously in GSoC. I am not applying to any other proje
 
 ## Schedule availability
 
-I don't really have any plans for holidays during the time of the program. There are barely any holidays between my 4th and 5th sems which would be around 10-15 days in late August early September. I would be willing to work during these days as well if need be. I would have slightly reduced output from 13th July to Mid/Late August due to semester end exams. My window of maximum productivity would be from May 29th ~ June 25th. I would not like to put behind any work for the buffer period as it clashes with my semester end exams. I would most likely be to work at full productivity from roughly 11th August onward assuming exam schedule would be similar to current semester. I would try and cover the work of later weeks early if any unforeseen circumstances arise.
+I don't really have any plans for holidays during the time of the program. There are barely any holidays between my 4th and 5th semesters which would be around 10-15 days in late August early September. I would be willing to work during these days as well if need be. I would have slightly reduced output from 13th July to Mid/Late August due to semester end exams. My window of maximum productivity would be from May 29th ~ June 25th. I would not like to put behind any work for the buffer period as it clashes with my semester end exams. I would most likely be to work at full productivity from roughly 11th August onward assuming exam schedule would be similar to current semester. I would try and cover the work of later weeks early if any unforeseen circumstances arise.
