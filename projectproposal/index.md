@@ -106,7 +106,7 @@ The optimizations basically include the following:
 
 - Our sum of interest
 
-  $$ \sum_n(y_n g(t_n)) \approx \sum_j(y_j[\sum_k(w_k(t_j) g(\hat{t}_k))]) = \sum_k\sum_jh_jw_k(t_j) \equiv \sum_k\hat{h}_kg(\hat{t}_k)$$ where $$ hat{h}_k = \sum_jh_jw_k(t_j) $$
+  $$ \sum_n(y_n g(t_n)) \approx \sum_j(y_j[\sum_k(w_k(t_j) g(\hat{t}_k))]) = \sum_k\sum_jh_jw_k(t_j) \equiv \sum_k\hat{h}_kg(\hat{t}_k)$$ where $$ \hat{h}_k = \sum_jh_jw_k(t_j) $$
 
 The following are the practical considerations when implementing the method
 
