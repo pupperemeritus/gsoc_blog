@@ -10,7 +10,7 @@ StingraySoftware
 
 ## Summary
 
-Analyzing unevenly sampled data cannot be done with methods of the fourier domain. We use the lomb scargle domain to account for the unevenness of the data. I will be mainly implementing 3 classes, Lomb Scargle cross spectrum core implementation, wrapper, power spectrum wrapper and in that order. I will be translating the implementation provided by Dr JD Scargle in MATLAB or FORTRAN into python. If the PSD arises as a special case of the CSD, then I would be reusing my CSD implementation otherwise I would be using the scipy.signal.LombScargle implementation to reduce development time. The Lomb Scargle cross spectrum implementation can be optimized by using JAX. Reason for choosing the scipy implementation is that it allows us to get an unnormalized PSD to which we can apply stingray's methods of normalization and astropy's implementation does not have that option, and their normalizations are different from the ones used in stingray. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs. Extra parameter of maximum frequency is to be given as it cannot be inferred from the data as equal to 1/time between two data points. Further the frequency resolution cannot beb inferred due to the same reason The crosspectrum class must be compatible with statistic functions already existing in stingray such as the time lag,phase lag and coherence (which exist only for crossspectra) (if this turns out to not be possible then create new similar statistic functions).
+Analyzing unevenly sampled data cannot be done with methods of the fourier domain. We use the lomb scargle domain to account for the unevenness of the data. I will be mainly implementing 3 classes, Lomb Scargle cross spectrum core implementation, wrapper, power spectrum wrapper and in that order. I will be translating the implementation provided by Dr JD Scargle in MATLAB or FORTRAN into python. If the PSD arises as a special case of the CSD, then I would be reusing my CSD implementation otherwise I would be using the scipy.signal.LombScargle implementation to reduce development time. The Lomb Scargle cross spectrum implementation can be optimized by using JAX. Reason for choosing the scipy implementation is that it allows us to get an unnormalised PSD to which we can apply stingray's methods of normalisation and astropy's implementation does not have that option, and their normalisations are different from the ones used in stingray. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs. Extra parameter of maximum frequency is to be given as it cannot be inferred from the data as equal to 1/time between two data points. Further the frequency resolution cannot beb inferred due to the same reason The crosspectrum class must be compatible with statistic functions already existing in stingray such as the time lag,phase lag and coherence (which exist only for crossspectra) (if this turns out to not be possible then create new similar statistic functions).
 
 ## Contributor Information
 
@@ -60,7 +60,7 @@ The periodogram can also be derived by extending the classical Schuster periodog
 
 Given by $$ P(f) = \frac{1}{2} ({ \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2}{\sum_n\cos^2(2\pi f[t_n-\tau])} + \frac{(\sum_ng_n\sin(2\pi f[t_n-\tau]))^2} {\sum_n\sin^2(2\pi f[t_n-\tau])} }) $$ where $$ \ \tau =\frac{1}{4\pi f} \tan^{-1} {\frac{\sum_n\sin(4\pi f_n)}{\sum_n{\cos(4\pi f_n)}}} $$
 
-We can modify the least squares approach to account for gaussian errors. Where $$\chi^2$$ test statistic is modified as follows
+We can modify the least squares approach to account for Gaussian errors. Where $$\chi^2$$ test statistic is modified as follows
 
 $$ \chi^2(f) = \sum_n(\frac{(y_n - y_{model}(t_n;f))^2}{\sigma_n^2}) $$
 
@@ -143,7 +143,7 @@ Adding the core computational parts. Implementing the core computational crosssp
 
 ### Lomb Scargle Cross Spectrum class
 
-Wraps the Lomb Scargle cross spectrum in the above utils.py implementation. Handles inputs of two light curves, eventlists, timearray and light curve iterables. Needs to perform data validity checks and normalization(leahy/absolute rms/fractional rms).
+Wraps the Lomb Scargle cross spectrum in the above utils.py implementation. Handles inputs of two light curves, eventlists, timearray and light curve iterables. Needs to perform data validity checks and normalisation(leahy/absolute rms/fractional rms).
 
 Class parameters
 
@@ -152,7 +152,7 @@ Parameter   | Description                                                       
 data1       | light curve or eventlist                                                                       | None
 data2       | light curve or eventlist                                                                       | None
 power_type  | real or complex power                                                                          | all
-norm        | Normalization methods(frac RMS, abs RMS, leahy)                                                | Fractional RMS
+norm        | Normalisation methods(frac RMS, abs RMS, leahy)                                                | Fractional RMS
 dt          | time resolution only needed for eventlist objects                                              | Automatically selected sensible value
 gti         | time intervals which have good data (if not none overrides common gtis from both light curves) | Common gti from both light curves
 skip_checks | flag to skip checks                                                                            | False
@@ -176,7 +176,7 @@ NOTE : This is a rough outline and the attributes and parameters may change depe
 
 ### Lomb Scargle Power Spectrum
 
-With the help of scipy.signal.LombScargle, this class creates the power spectrum. Handles input of one light curve. Helper functions that allow creation of PSD from timearray, eventlists and light curve iterables must be created. And must perform validity checks and normalization(leahy/absolute rms/fractional rms).
+With the help of scipy.signal.LombScargle, this class creates the power spectrum. Handles input of one light curve. Helper functions that allow creation of PSD from timearray, eventlists and light curve iterables must be created. And must perform validity checks and normalisation(leahy/absolute rms/fractional rms).
 
 Class parameters
 
@@ -184,7 +184,7 @@ Parameter   | Description                                                       
 ----------- | --------------------------------------------------------------------------------------- | -----------------------------------
 data        | light curve or eventlist                                                                | None
 power_type  | real or all powers                                                                      | all
-norm        | Normalization methods(frac RMS, abs RMS, leahy)                                         | Fractional RMS
+norm        | Normalisation methods(frac RMS, abs RMS, leahy)                                         | Fractional RMS
 dt          | time resolution only needed for eventlist objects                                       | Automatically chosen sensible value
 gti         | time intervals which have good data (if not None overrides existing gti in light curve) | None
 skip_checks | flag to skip checks                                                                     | False
@@ -224,7 +224,7 @@ July 31st - August 13th        | JAX optimization , tests and documentation : te
 August 13th - August 21st      | Buffer period and improving code quality
 August 21st - August 28th      | Final evaluation week
 August 28th - September 4th    | Mentor final evaluation week
-September 5th - September 24th | Buffer comprehensive tests and documentation
+September 5th - September 24th | Buffer period comprehensive tests and documentation
 
 ## GSoC
 
