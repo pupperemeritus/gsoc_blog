@@ -68,7 +68,7 @@ Another important modification made is to add an offset term to the sinusoidal m
 
 $$ y_{model}(t;f) = y_0(f) + A_f \sin(2\pi f(t-\tau)) $$
 
-The $$ y_model $$ can be further generalized by adding K - 1 terms to it.
+The $$ y_{model} $$ can be further generalized by adding K - 1 terms to it.
 
 $$ y_{model}(t;f) = A_f^0 + \sum{K}_{k=1} A_f^{k} \sin(2\pi kf(t-\phi_f^k)) $$
 
