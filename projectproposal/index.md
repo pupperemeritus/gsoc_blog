@@ -50,7 +50,7 @@ Referring [Review paper by Jacob T. VanderPlas](https://doi.org/10.3847/1538-436
 
 The Lomb Scargle method uses the mean of the sampling intervals to account for the uneven sampling intervals. Lomb Scargle method is equivalently interpreted as a Fourier method as well as a least squares method. The generalized periodogram form ensures time shift invariance.
 
-The least squares approach works by minimizing the chi^2 test statistic of a function $$y(t;f) = A_f \sin(2\pi f(t-\phi_f))$$ where amplitude $$ A_f $$ and phase $$ \phi_f $$ vary with frequency.
+The least squares approach works by minimizing the chi^2 test statistic of a function $$ y(t;f) = A_f \sin(2\pi f(t-\phi_f)) $$ where amplitude $$ A_f $$ and phase $$ \phi_f $$ vary with frequency.
 
 $$ \chi^2 = \sum_n ((y_n - y(t_n;f))^2).$$
 
@@ -132,18 +132,18 @@ The following are the practical considerations when implementing the method
 
 ### Proposed Structure
 
-Filename                                    | Description
-------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-utils.py(additions of new helper functions) | contains the crossspectrum implementation
-LombScargle.py                              | Using our custom crossspectrum implementation in LombScargle.py creating a class that can take in Light curve and eventlist data and create the cross spectrum. Using existing implementation in scipy creating the power spectrum or using our cross spectrum implementation if power spectrum arises as a special case of cross spectrum or make one from scratch
+Filename       | Description
+-------------- | ---------------------------------------------------------------
+utils.py       | helper functions
+LombScargle.py | Implementation of the power spectrum and cross spectrum classes
 
 ### Additions to utils.py
 
-Adding the core computational parts. Implementing the core computational crossspectrum algorithm referring to Dr Jeffrey D. Lomb scargle's paper. JAX for improved speed after implementing in regular python.
+Helper functions like ACF, CCF that work with unevenly sampled data.
 
 ### Lomb Scargle Cross Spectrum class
 
-Wraps the Lomb Scargle cross spectrum in the above utils.py implementation. Handles input of two light curves, eventlists, timearray and light curve iterable. Needs to perform data validity checks and normalisation(leahy/absolute rms/fractional rms).
+Wraps the Lomb Scargle cross spectrum in our own implementation. Handles input of two light curves, eventlists, timearray and light curve iterable. Needs to perform data validity checks and normalisation(leahy/absolute rms/fractional rms).
 
 Class parameters
 
@@ -176,7 +176,7 @@ NOTE : This is a rough outline and the attributes and parameters may change depe
 
 ### Lomb Scargle Power Spectrum
 
-With the help of scipy.signal.LombScargle, this class creates the power spectrum. Handles input of one light curve. Helper functions that allow creation of PSD from timearray, eventlists and light curve iterables must be created. And must perform validity checks and normalisation(leahy/absolute rms/fractional rms).
+Using our own implementation of Press and Rybicki's fast Lomb Scargle power spectrum. Handles input of one light curve. Helper functions that allow creation of PSD from timearray, eventlists and light curve iterable must be created. And must perform validity checks and normalisation(leahy/absolute rms/fractional rms).
 
 Class parameters
 
