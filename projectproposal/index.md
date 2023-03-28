@@ -6,11 +6,11 @@ Astronomy Using Unevenly Sampled Data
 
 ## Organization
 
-StingraySoftware
+OpenAstronomy(StingraySoftware)
 
 ## Summary
 
-Analyzing unevenly sampled data cannot be done with methods of the fourier domain. We use the lomb scargle domain to account for the unevenness of the data. I will be implementing the crossspectrum from scratch and power spectrum using scipy implementation or from scratch. Then I will be creating wrapper classes and helper functions that will provide a sensible API to the user. The Lomb Scargle cross spectrum implementation can be optimized by using JAX. Reason for choosing the scipy implementation is that it allows us to get an unnormalised PSD to which we can apply stingray's methods of normalisation and astropy's implementation does not have that option, and their normalisations are different from the ones used in stingray. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs. Extra parameter of maximum frequency is to be given as it cannot be inferred from the data as equal to 1/time between two data points. Further the frequency resolution cannot be inferred due to the same reason. The crosspectrum class must be compatible with statistic functions already existing in stingray such as the time lag, phase lag and coherence (which exist only for crossspectra) (if this turns out to not be possible then create new similar statistic functions).
+Analyzing unevenly sampled data cannot be done with methods of the Fourier domain. We use the Lomb Scargle method to account for the unevenness of the data. I will be implementing the Lomb Scargle cross spectrum and power spectrum from scratch. Then I will be creating wrapper classes and helper functions that will provide a sensible API to the user. The Lomb Scargle cross spectrum implementation can be optimized by using JAX. Reason for choosing to do the power spectrum from scratch is that it allows us to get a raw PSD to which we can apply stingray's methods of normalisation and astropy's implementation does not have that option, and their normalisations are different from the ones used in stingray, and we can use the $$ \mathcal{O} (N\log{}N) $$ algorithm proposed by Press and Rybicki. There would also be a need of helper functions to create objects of these classes automatically from various input types similar to the existing PSDs. Extra parameter of maximum frequency is to be given as it cannot be inferred from the data as equal to 1/time between two data points. Further the frequency resolution cannot be inferred due to the same reason. The cross spectrum class must be compatible with statistic functions already existing in stingray such as the time lag, phase lag and coherence (which exist only for cross spectra) (if this turns out to not be possible then create new similar statistic functions).
 
 ## Contributor Information
 
@@ -28,7 +28,12 @@ Analyzing unevenly sampled data cannot be done with methods of the fourier domai
 
 ## Background
 
-I am an undergraduate student of Chaitanya Bharathi Institute of Technology studying Artificial Intelligence and Data Science. I have a lot of hobbies out of which some of them include astrophotography, Guitar(Rock and Pop Trinity Grade 8) and chess. Furthermore, I originally wanted to study a course in Computational Astronomy/Astrophysics as it is the confluence of all my interests but could not do it due to lack of availability of such a course in my country. I am passionate about using, propogating and contributing to open source software. I also like to do astrophotography in my free time, though I cannot really produce great images as I am limited by a Bortle 9 sky and lack of a tracker.
+I am a second year undergraduate student of Chaitanya Bharathi Institute of Technology studying Artificial Intelligence and Data Science. I have a lot of hobbies out of which some of them include astrophotography, Guitar(Rock and Pop Trinity Grade 8) and chess. Furthermore, I originally wanted to study a course in Computational Astronomy/Astrophysics as it is the confluence of all my interests but could not do it due to lack of availability of such a course in my country. I am passionate about using, propagating and contributing to open source software. I also like to do astrophotography in my free time, though I cannot really produce great images as I am limited by a Bortle 9 sky and lack of a tracker.
+
+Relevant Experience
+
+- Created a discord bot that uses AI to determine the mood of chat messages
+- Participated in my college's Hacktober fest and came 5th in my panel.
 
 ## Interest in Open Astronomy
 
@@ -42,7 +47,7 @@ Time-lag, phase lag and coherence of light curves are also to be found out in th
 
 The implementation of cross spectrum is to be done from scratch in Python as it only exists in MATLAB and FORTRAN courtesy of Dr. Jeffrey D. Scargle ([Studies in astronomical time series analysis. III-Fourier transforms, autocorrelation functions, and cross-correlation functions of unevenly spaced data](https://adsabs.harvard.edu/full/1989ApJ...343..874S)).
 
-The implementation of power spectrum is not required since a compatible implementation exists in scipy.signal.LombScargle. We can refer to the original paper by Jeffrey D. Scargle [Studies in astronomical time series analysis. II-Statistical aspects of Spectral Analysis of Unevenly Spaced Data](https://adsabs.harvard.edu/full/1982ApJ...263..835S7)
+The implementation of power spectrum may not be required since a compatible implementation exists in scipy.signal.LombScargle. We can refer to the original paper by Jeffrey D. Scargle [Studies in astronomical time series analysis. II-Statistical aspects of Spectral Analysis of Unevenly Spaced Data](https://adsabs.harvard.edu/full/1982ApJ...263..835S7). But it is useful to implement it from scratch as we can use the optimizations introduced by William H. Press and George B. Rybicki as shown below.
 
 ## A deep dive into Lomb Scargle Method and various optimizations
 
@@ -72,11 +77,13 @@ The $$ y_{model} $$ can be further generalized by adding K - 1 terms to it.
 
 $$ y_{model}(t;f) = A_f^0 + \sum{K}_{k=1} A_f^{k} \sin(2\pi kf(t-\phi_f^k)) $$
 
-The above can be further optimized by using the [optimizations introduced by William H. Press and George B. Rybicki](https://articles.adsabs.harvard.edu/pdf/1989ApJ...338..277P)
+These implementations are $$ \mathcal{O}(N^2) $$
+
+The above can be further optimized by using the [optimizations introduced by William H. Press and George B. Rybicki](https://articles.adsabs.harvard.edu/pdf/1989ApJ...338..277P) which brings down the overall time complexity of the algorithm to $$ \mathcal{O}(N\log{}N) $$
 
 The optimizations basically include the following:
 
-- Simplifications of the following trigionometric sums if we define
+- Simplifications of the following trigonometric sums if we define
 
   $$S_y = \sum_j y_j \sin(\omega t_j)$$
 
@@ -96,13 +103,13 @@ The optimizations basically include the following:
 
   $$ \sum_j \sin^2(\omega (t_j - \tau)) = 0.5 (N - C_2 \cos(2 \omega \tau) - S_2 \sin(2 \omega \tau)) $$
 
-- Where $$\omega\ is\ 2 \pi f\ and$$ N is the number of samples.
+- Where $$ \omega\ is\ 2 \pi f $$ and N is the number of samples.
 
-- If the $$t_j$$'s were evenly spaced then the above calculations could be performed by FFTs
+- If the $$ t_j $$'s were evenly spaced then the above calculations could be performed by FFTs
 
-- Therefore we extirpolate the values at evenly spaced $$t_j$$'s by using extirpolation weight which is the same as interpolation weight
+- Therefore, we extirpolate the values at evenly spaced $$ t_j $$'s by using extirpolation weight which is the same as interpolation weight
 
-  $$g(t) = \sum_n w_n(t) g(\hat{t}_n)$$ where $$w_n(t)$$ are interpolation weights and $$ \hat{t}_n $$ is the extirpolated evenly spaced points
+  $$ g(t) = \sum_n w_n(t) g(\hat{t}_n) $$ where $$ w_n(t) $$ are interpolation weights and $$ \hat{t}_n $$ is the extirpolated evenly spaced points
 
 - Our sum of interest
 
@@ -110,7 +117,7 @@ The optimizations basically include the following:
 
 The following are the practical considerations when implementing the method
 
-- Frequency limits and grid spacing must be chosen carefully. The low frequency limit is often chosen to be 0 for the sake of convenience but can be set to $$\frac{1}{T}$$ where T is the total span of the time series. The high frequency limit can be calculated by finding the true Nyquist frequency or pseudo Nyquist limit based on careful scrutiny of the window function.
+- Frequency limits and grid spacing must be chosen carefully. The low frequency limit is often chosen to be 0 for the sake of convenience but can be set to $$ \frac{1}{T} $$ where T is the total span of the time series. The high frequency limit can be calculated by finding the true Nyquist frequency or pseudo Nyquist limit based on careful scrutiny of the window function.
 
 - The interaction of the signal, convolution caused by survey window and noise in the data, the largest peak in the periodogram may correspond to an alias of the true frequency
 
@@ -228,8 +235,8 @@ September 5th - September 24th | Buffer period, comprehensive tests and document
 
 ## GSoC
 
-I have not participated previously in GSoC. I am not applying to any other projects as this project has piqued my interest the most and aligns the most with my knowledge and skillset.
+I have not participated previously in GSoC. I am not applying to any other projects as this project has piqued my interest the most and aligns the most with my knowledge and skill set.
 
 ## Schedule availability
 
-I don't really have any plans for holidays during the time of the program. There are barely any holidays between my 4th and 5th semesters which would be around 10-15 days in late August early September. I would be willing to work during these days as well if need be. I would have slightly reduced output from 13th July to Mid/Late August due to semester end exams. My window of maximum productivity would be from May 29th ~ June 25th. I would not like to put behind any work for the buffer period as it clashes with my semester end exams. I would most likely be to work at full productivity from roughly 11th August onward assuming exam schedule would be similar to current semester. I would try and cover the work of later weeks early if any unforeseen circumstances arise.
+I don't really have any plans for holidays during the time of the program. There are barely any holidays between my 4th and 5th semesters which would be around 10-15 days in late August early September. I would be willing to work during these days as well if need be. I would have slightly reduced output from 13th July to Mid/Late August due to semester end exams. My window of maximum productivity would be from May 29th ~ June 25th. I would not like to put behind any work for the buffer period as it clashes with my semester end exams. I would most likely be to work at full productivity from roughly 11th August onward assuming exam schedule would be similar to current semester. Likewise, I would try and cover the work of later weeks early if any unforeseen circumstances arise.
