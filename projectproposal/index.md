@@ -214,8 +214,8 @@ NOTE : This is a rough outline and the attributes and parameters may change depe
 
 ## Deliverables
 
-1. LombScargleCrossSpectrum class
-2. LombScarglePowerSpectrum class
+1. Implementation of Lomb Scargle Cross Spectrum along with helper functions, statistical functions, user facing wrapper class, tests and documentation
+2. Implementation of Lomb Scargle Power Spectrum along with helper functions, statistical functions, user facing wrapper class, tests and documentation
 
 ## Description and Timeline
 
