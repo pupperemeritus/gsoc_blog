@@ -57,7 +57,7 @@ The Lomb Scargle method uses the mean of the sampling intervals to account for t
 
 The least squares approach works by minimizing the chi^2 test statistic of a function $$ y(t;f) = A_f \sin(2\pi f(t-\phi_f)) $$ where amplitude $$ A_f $$ and phase $$ \phi_f $$ vary with frequency.
 
-$$ \chi^2 = \sum_n ((y_n - y(t_n;f))^2).$$
+$$ \chi^2 = \sum_n (y_n - y(t_n;f))^2 $$
 
 The periodogram using this approach is given by $$ P(f) = \frac{\chi^2-\chi^2(f)}{2} $$ where $$\chi^2(f)$$ is the $$\chi^2 $$ test statistic for the given frequency and $$\chi^2 $$ is the non varying reference model.
 
@@ -67,7 +67,7 @@ Given by $$ P(f) = \frac{1}{2} [{ \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2} 
 
 We can modify the least squares approach to account for Gaussian errors. Where $$ \chi^2 $$ test statistic is modified as follows
 
-$$ \chi^2(f) = \sum_n(\frac{(y_n - y_{model}(t_n;f))^2}{\sigma_n^2}) $$
+$$ \chi^2(f) = \sum_n \frac{(y_n - y_{model}(t_n;f))^2}{\sigma_n^2} $$
 
 Another important modification made is to add an offset term to the sinusoidal model at each frequency in the least squares approach.
 
