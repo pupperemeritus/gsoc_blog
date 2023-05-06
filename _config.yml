@@ -1,3 +1,14 @@
 remote_theme: pages-themes/cayman@v0.2.0
 plugins:
 - jekyll-remote-theme
+- jekyll-paginate
+
+
+name: Sri Guru Datta Pisupati
+description: GSoC Blog
+url: https://pupperemeritus.github.io/gsoc_blog/
+
+permalink: /:categories/:title
+
+include:
+  - _pages
