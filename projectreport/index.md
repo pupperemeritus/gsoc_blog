@@ -7,7 +7,7 @@ layout: default
 
 # About the Project
 
-In astronomy, its common for data to be imperfect and unevenly sampled. This is due to various observational factors such as obscuration of subject, instrumental limitations, transmission issues etc. In X-ray astronomy objects of interest often include high energy events such as Gamma Ray Bursts, Pulsar/Magnetar Flares, Stellar Flares, X-ray binaries etc. These are often highly periodic signals especially for gamma ray bursts and pulsar/magnetar flares. Analyzing unevenly sampled data cannot be done with the regular Fourier transform. Lomb Scargle Fourier transform is a modification of the fourier transform for unevenly sampled data. It works by accounting for the uneven sampling intervals. This project is quite complementary to Gaurav Joshi's project ["Quasi Periodic Oscillation detection using Gaussian Processes"](https://gaurav17joshi.github.io/contrast/project-report/). The Lomb Scargle method of detecting oscillations is several orders of magnitude faster than quasi periodic oscillation detection using Gaussian Processes method. Thus my project can be used for a rougher analysis of a lot of unevenly sampled data out of which the more interesting candidates can be sifted through and analyzed further using Gaurav's project. This project actually contains implementation of two versions of the same algorithm one is the orignal slow algorithm introduced in the [original paper](https://adsabs.harvard.edu/full/1982ApJ...263..835S7) and the fast algorithm introduced in [this paper](https://ui.adsabs.harvard.edu/abs/1989ApJ...338..277P/abstract)
+In astronomy, its common for data to be imperfect and unevenly sampled. This is due to various observational factors such as obscuration of subject, instrumental limitations, transmission issues etc. In X-ray astronomy objects of interest often include high energy events such as Gamma Ray Bursts, Pulsar/Magnetar flares, Stellar flares, X-ray binaries etc. These are often highly periodic signals especially for pulsar/magnetar jets that flash with blistering periodicity of a few milliseconds. Analyzing unevenly sampled data cannot be done with the Fast Fourier transform and the fourier transform is practically too slow for the lightcurves. Lomb Scargle Fourier transform is a modification of the fourier transform for unevenly sampled data. It works by accounting for the uneven sampling intervals. This project is quite complementary to Gaurav Joshi's project ["Quasi Periodic Oscillation detection using Gaussian Processes"](https://gaurav17joshi.github.io/contrast/project-report/). The Lomb Scargle method of detecting oscillations is several orders of magnitude faster than quasi periodic oscillation detection using Gaussian Processes method. Thus my project can be used for a rougher analysis of a lot of unevenly sampled data out of which the more interesting candidates can be sifted through and analyzed further using Gaurav's project. This project actually contains implementation of two versions of the same algorithm one is the orignal slow algorithm introduced in the [original paper](https://adsabs.harvard.edu/full/1982ApJ...263..835S7) and the fast algorithm introduced in [this paper](https://ui.adsabs.harvard.edu/abs/1989ApJ...338..277P/abstract)
 
 For greater understanding please refer [Understanding the Lomb-Scargle Periodogram](https://doi.org/10.3847/1538-4365/aab766).
 
@@ -31,7 +31,7 @@ The usage of my code can be demonstrated in these [notebooks](https://gist.githu
 2. Implemented the Lomb Scargle cross spectrum class
 3. Implemented the Lomb Scargle power spectrum class
 4. Tested the above code
-5. Documentation notebooks for the above
+5. Documentation notebooks for the above code
 
 # Future Work
 
@@ -39,9 +39,11 @@ The usage of my code can be demonstrated in these [notebooks](https://gist.githu
 
 2. Adding more documentation and making the existing documentation more clearer.
 
+3. Keeping up with changes in the research as well as watching out for breaking changes pushed by libraries used in the project.
+
 # Maths Behind the Project
 
-The Lomb Scargle method uses the mean of the sampling intervals to account for the uneven sampling intervals. Lomb Scargle method is equivalently interpreted as a Fourier method as well as a least squares method. The generalized periodogram form ensures time shift invariance.
+The Lomb Scargle method uses the mean of the sampling intervals to account for the uneven sampling intervals. Lomb Scargle method is equivalently interpreted as a Fourier method as well as a least squares method. The generalized periodogram form ensures time shift invariance. Refer [Understanding the Lomb-Scargle Periodogram](https://doi.org/10.3847/1538-4365/aab766) for a clearer understanding.
 
 This project uses the Lomb Scargle implementation based on the Fourier interpretation. $$ P(f) = \frac{1}{2} [{ \frac{ (\sum_n{g_n\cos(2\pi f[t_n-\tau])})^2} {\sum_n\cos^2(2\pi f[t_n-\tau])} + \frac{(\sum_ng_n\sin(2\pi f[t_n-\tau]))^2} {\sum_n\sin^2(2\pi f[t_n-\tau]) }}] $$ where $$ \ \tau =\frac{1}{4\pi f} \tan^{-1} {\frac{\sum_n\sin(4\pi f_n)}{\sum_n{\cos(4\pi f_n)}}} $$
 
@@ -73,7 +75,9 @@ The optimizations basically include the following:
 
 - If the $$ t_j $$'s were evenly spaced then the above calculations could be performed by FFTs
 
-- Therefore, we extirpolate the values at evenly spaced $$ t_j $$'s by using extirpolation weight which is the same as interpolation weight
+- Therefore, we "extirpolate" the values at evenly spaced $$ t_j $$'s by using extirpolation weight which is the same as interpolation weight
+
+- In the words of Press and Rybicki, Interpolation, as classically understood, uses several function values on a regular mesh to construct an accurate approximation at an arbitrary point. Extirpolation, just the opposite, replaces a function value at an arbitrary point by several function values on a regular mesh, doing this in such a way that sums over the mesh are an accurate approximation to sums over the original arbitrary point.
 
   $$ g(t) = \sum_n w_n(t) g(\hat{t}_n) $$ where $$ w_n(t) $$ are interpolation weights and $$ \hat{t}_n $$ is the extirpolated evenly spaced points
 
