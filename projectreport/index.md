@@ -25,10 +25,19 @@ My code is present in this pull request [StingrayPR#737](https://github.com/Stin
 
 The usage of my code can be demonstrated in these [notebooks](https://gist.github.com/pupperemeritus/cd9ed30315c36818b75730905a6dc432)
 
+# What's Completed
+
+1. Implemented the Lomb Scargle Fourier transform method
+2. Implemented the Lomb Scargle cross spectrum class
+3. Implemented the Lomb Scargle power spectrum class
+4. Tested the above code
+5. Documentation notebooks for the above
+
 # Future Work
 
 1. Further simplifying and optimizing the code(Multithreading, Memory optimization, enabling usage of GPUs etc).
-2. Adding more documentation and making the existing documentation more clearer. 3.
+
+2. Adding more documentation and making the existing documentation more clearer.
 
 # Maths Behind the Project
 
@@ -74,10 +83,11 @@ The optimizations basically include the following:
 
 # Challenges faced and lessons learnt
 
-1. Implementing the Lomb Scargle fourier transform was quite challenging to get right. It was easy to get SOME output but getting sensible output was very difficult. Almost 1.5 months was spent on this.
+1. Implementing the Lomb Scargle fourier transform was quite challenging to get right. It was easy to get SOME output but getting sensible output was very difficult. Almost 1.5 months were spent on this.
 2. Pivoting the class from the legacy interface to the modern interface followed by stingray. I had created the LombScargle classes using the legacy interface. It took a bit of relearning to think of the class in the modern interface. The legacy interface had a lot more monolithic structure whereeas the new interface from the AveragedCrossspectrum and the likes is more modular as well as clean.
 3. Writing meaningful tests has been quite a new experience for me as I had not written any tests for my code before. I learnt a lot about them.
 4. I learnt a lot about CI/CD processes for testing and deploying code. The different testing tools like pytest, codecov, black formatter etc were used a lot.
+5. I learnt a lot about good git practices to follow on complicated open source projects. There has been a lot of situations where i had to rebase my branch because some fixes that were critical to my project had been merged into main. Furthermore I had learnt about nested repositories as the notebooks repository is a subrepository of stingray repository.
 
 # Acknowledgements
 
