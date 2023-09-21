@@ -1,6 +1,6 @@
 ---
 title: GSoC 2023 Project Report
-layout: report
+layout: default
 ---
 
 # Astronomy Using Unevenly Sampled Data
