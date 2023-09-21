@@ -7,7 +7,7 @@ plugins:
 name: Sri Guru Datta Pisupati
 description: GSoC Blog
 url: https://pupperemeritus.github.io/gsoc_blog/
-
+title: GSoC Blog
 permalink: /:categories/:title
 
 include:
