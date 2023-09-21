@@ -1,5 +1,6 @@
 ---
 title: GSoC 2023 Project Report
+layout: report
 ---
 
 # Astronomy Using Unevenly Sampled Data
@@ -8,7 +9,7 @@ title: GSoC 2023 Project Report
 
 In astronomy, its common for data to be imperfect and unevenly sampled. This is due to various observational factors such as obscuration of subject, instrumental limitations, transmission issues etc. In X-ray astronomy objects of interest often include high energy events such as Gamma Ray Bursts, Pulsar/Magnetar Flares, Stellar Flares, X-ray binaries etc. These are often highly periodic signals especially for gamma ray bursts and pulsar/magnetar flares. Analyzing unevenly sampled data cannot be done with the regular Fourier transform. Lomb Scargle Fourier transform is a modification of the fourier transform for unevenly sampled data. It works by accounting for the uneven sampling intervals. This project is quite complementary to Gaurav Joshi's project ["Quasi Periodic Oscillation detection using Gaussian Processes"](https://gaurav17joshi.github.io/contrast/project-report/). The Lomb Scargle method of detecting oscillations is several orders of magnitude faster than quasi periodic oscillation detection using Gaussian Processes method. Thus my project can be used for a rougher analysis of a lot of unevenly sampled data out of which the more interesting candidates can be sifted through and analyzed further using Gaurav's project. This project actually contains implementation of two versions of the same algorithm one is the orignal slow algorithm introduced in the [original paper](https://adsabs.harvard.edu/full/1982ApJ...263..835S7) and the fast algorithm introduced in [this paper](https://ui.adsabs.harvard.edu/abs/1989ApJ...338..277P/abstract)
 
-For greater understanding please refer [Understanding the Lomb-Scargle Periodogram](https://doi.org/10.3847/1538-4365/aab766), [](),[]()
+For greater understanding please refer [Understanding the Lomb-Scargle Periodogram](https://doi.org/10.3847/1538-4365/aab766).
 
 ## Goals of the project
 
@@ -71,10 +72,12 @@ The optimizations basically include the following:
 
   $$ \sum_n y_n g(t_n) \approx \sum_j y_j[\sum_k(w_k(t_j) g(\hat{t}_k))] = \sum_k\sum_j h_j w_k(t_j) \equiv \sum_k \hat{h}_kg(\hat{t}_k)$$ where $$ \hat{h}_k = \sum_j h_j w_k(t_j) $$
 
-# Challenges faced
+# Challenges faced and lessons learnt
 
-1. Implementing the Lomb Scargle fourier transform.
-2. Pivoting the class from the legacy interface to the modern interface followed by stingray. 3.
+1. Implementing the Lomb Scargle fourier transform was quite challenging to get right. It was easy to get SOME output but getting sensible output was very difficult. Almost 1.5 months was spent on this.
+2. Pivoting the class from the legacy interface to the modern interface followed by stingray. I had created the LombScargle classes using the legacy interface. It took a bit of relearning to think of the class in the modern interface. The legacy interface had a lot more monolithic structure whereeas the new interface from the AveragedCrossspectrum and the likes is more modular as well as clean.
+3. Writing meaningful tests has been quite a new experience for me as I had not written any tests for my code before. I learnt a lot about them.
+4. I learnt a lot about CI/CD processes for testing and deploying code. The different testing tools like pytest, codecov, black formatter etc were used a lot.
 
 # Acknowledgements
 
