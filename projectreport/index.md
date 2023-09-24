@@ -13,17 +13,23 @@ Stingray is a Python library designed to perform times series analysis and relat
 
 # About the Project
 
-In astronomy, its common for data to be imperfect and unevenly sampled. This is due to various observational factors such as obscuration of subject, instrumental limitations, transmission issues etc. In X-ray astronomy objects of interest often include high energy events such as Gamma Ray Bursts, Pulsar/Magnetar flares, Stellar flares, X-ray binaries etc. Some of these signals are often highly periodic signals especially for pulsar/magnetar jets that flash with blistering periodicity of a few milliseconds. Analyzing unevenly sampled data cannot be done with the Fast Fourier transform and the fourier transform is practically too slow for the lightcurves. Lomb Scargle Fourier transform is a modification of the fourier transform for unevenly sampled data. It works by accounting for the uneven sampling intervals. This project is quite complementary to Gaurav Joshi's project ["Quasi Periodic Oscillation detection using Gaussian Processes"](https://gaurav17joshi.github.io/contrast/project-report/). The Lomb Scargle method of detecting oscillations is several orders of magnitude faster than quasi periodic oscillation detection using Gaussian Processes method. Thus my project can be used for a rougher analysis of a lot of unevenly sampled data out of which the more interesting candidates can be sifted through and analyzed further using Gaurav's project. This project actually contains implementation of two versions of the same algorithm one is the orignal slow algorithm introduced in the [original paper](https://adsabs.harvard.edu/full/1982ApJ...263..835S7) and the fast algorithm introduced in [this paper](https://ui.adsabs.harvard.edu/abs/1989ApJ...338..277P/abstract)
+In astronomy, it is common for data to be imperfect and unevenly sampled due to various observational factors such as subject obscuration, instrumental limitations, and transmission issues. In X-ray astronomy, objects of interest often include high-energy events like Gamma Ray Bursts, Pulsar/Magnetar flares, Stellar flares, and X-ray binaries. Some of these signals, especially those from pulsar/magnetar jets, exhibit highly periodic behavior, with flashes occurring at intervals of just a few milliseconds.
+
+Analyzing unevenly sampled data presents challenges, as traditional methods like the Fast Fourier Transform are unsuitable, and the Fourier Transform itself is too slow for analyzing lightcurves in practical scenarios. The Lomb-Scargle Fourier transform is a modified version of the Fourier transform designed specifically for unevenly sampled data. It addresses the irregular sampling intervals, making it a valuable tool for the analysis of astronomical data.
+
+This project is highly complementary to Gaurav Joshi's project, ["Quasi-Periodic Oscillation Detection using Gaussian Processes"](https://gaurav17joshi.github.io/contrast/project-report/). The Lomb-Scargle method for detecting oscillations is orders of magnitude faster than the Gaussian Processes method for quasi-periodic oscillation detection. Therefore, my project can serve as a preliminary analysis tool for a wide range of unevenly sampled data, helping identify promising candidates for further in-depth analysis using Gaurav's project.
+
+Notably, this project includes the implementation of two versions of the Lomb-Scargle algorithm: the original slower algorithm introduced in the [original paper](https://adsabs.harvard.edu/full/1982ApJ...263..835S7) and a faster algorithm introduced in [this paper](https://ui.adsabs.harvard.edu/abs/1989ApJ...338..277P/abstract).
 
 For greater understanding please refer [Understanding the Lomb-Scargle Periodogram](https://doi.org/10.3847/1538-4365/aab766).
 
-## Goals of the project
+# Goals of the Project
 
-- Implementing the Lomb Scargle Fourier transform method
-- Implementing the Lomb Scargle cross spectrum class
-- Implementing the Lomb Scargle power spectrum class
-- Testing the above code
-- Documentation
+- Implement the Lomb-Scargle Fourier transform method.
+- Develop the Lomb-Scargle cross-spectrum class.
+- Create the Lomb-Scargle power spectrum class.
+- Conduct thorough testing of the above code.
+- Prepare comprehensive documentation.
 
 # Code and Submission
 
@@ -33,19 +39,19 @@ The usage of my code can be demonstrated in these [notebooks](https://gist.githu
 
 # What's Completed
 
-1. Implemented the Lomb Scargle Fourier transform method
-2. Implemented the Lomb Scargle cross spectrum class
-3. Implemented the Lomb Scargle power spectrum class
-4. Tested the above code
-5. Documentation notebooks for the above code
+1. Implemented the Lomb-Scargle Fourier transform method.
+2. Developed the Lomb-Scargle cross-spectrum class.
+3. Created the Lomb-Scargle power spectrum class.
+4. Conducted thorough testing of the code.
+5. Prepared documentation notebooks for the above code.
 
 # Future Work
 
-1. Further simplifying and optimizing the code(Multithreading, Memory optimization, enabling usage of GPUs etc).
+1. Further simplifying and optimizing the code (e.g., implementing multithreading, optimizing memory usage, and enabling GPU utilization).
 
-2. Adding more documentation and making the existing documentation more clearer.
+2. Enhancing documentation by adding more content and improving the clarity of existing documentation.
 
-3. Keeping up with changes in the research as well as watching out for breaking changes pushed by libraries used in the project.
+3. Staying updated with the latest research developments and monitoring for potential breaking changes introduced by the libraries used in the project.
 
 # Maths Behind the Project
 
@@ -93,12 +99,12 @@ The optimizations basically include the following:
 
 # Challenges faced and lessons learnt
 
-1. Implementing the Lomb Scargle fourier transform was quite challenging to get right. It was easy to get SOME output but getting sensible output was very difficult. Almost 1.5 months were spent on this.
-2. Pivoting the class from the legacy interface to the modern interface followed by stingray. I had created the LombScargle classes using the legacy interface. It took a bit of relearning to think of the class in the modern interface. The legacy interface had a lot more monolithic structure whereeas the new interface from the AveragedCrossspectrum and the likes is more modular as well as clean.
-3. Writing meaningful tests has been quite a new experience for me as I had not written any tests for my code before. I learnt a lot about them.
-4. I learnt a lot about CI/CD processes for testing and deploying code. The different testing tools like pytest, codecov, black formatter etc were used a lot.
-5. I learnt a lot about good git practices to follow on complicated open source projects. There has been a lot of situations where i had to rebase my branch because some fixes that were critical to my project had been merged into main. Furthermore I had learnt about nested repositories as the notebooks repository is a subrepository of stingray repository.
+1. Implementing the Lomb-Scargle Fourier transform was quite challenging to get right. It was easy to obtain SOME output, but obtaining sensible output was very difficult. Almost 1.5 months were spent on this.
+2. Pivoting the class from the legacy interface to the modern interface followed by Stingray was a bit challenging. I had initially created the Lomb-Scargle classes using the legacy interface. It took some time to relearn how to structure the class in the modern interface. The legacy interface had a more monolithic structure, while the new interface, as seen in AveragedCrossspectrum and similar classes, is more modular and cleaner.
+3. Writing meaningful tests has been a new experience for me since I had not written any tests for my code before. I learned a lot from this experience.
+4. I gained insights into CI/CD processes for testing and deploying code. Various testing tools like pytest, codecov, and the black formatter were extensively used.
+5. I also learned a lot about good Git practices to follow in complex open-source projects. There were many situations where I had to rebase my branch because critical fixes had been merged into the main branch. Furthermore, I learned about nested repositories, as the notebooks repository is a subrepository of the Stingray repository.
 
 # Acknowledgements
 
-I am very grateful to my mentors [Daniela Huppukothen](https://github.com/dhuppenkothen) and [Matteo Bachetti](https://github.com/matteobachetti) for their extremely valuable feedback and guidance. Especially I would like to thank them for their patience and hands-on help with some parts where I was having trouble getting things to work. Their guidance not only helped me complete my own projec but also make a few contributions to the library outside my project as well.
+I am immensely grateful to my mentors, [Daniela Huppenkothen](https://github.com/dhuppenkothen) and [Matteo Bachetti](https://github.com/matteobachetti), for their invaluable feedback and guidance. Especially, I would like to thank them for their patience and hands-on help with some parts where I encountered difficulties. Their guidance not only helped me complete my own project but also enabled me to make contributions to the library outside the scope of my project.
