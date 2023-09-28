@@ -37,6 +37,10 @@ My code is present in this pull request [StingrayPR#737](https://github.com/Stin
 
 The usage of my code can be demonstrated in these [notebooks](https://gist.github.com/pupperemeritus/cd9ed30315c36818b75730905a6dc432)
 
+# The Current State
+
+The project is nearly done, only things left are some more reviews by the mentors and the final merge.
+
 # What's Completed
 
 1. Implemented the Lomb-Scargle Fourier transform method.
@@ -52,6 +56,10 @@ The usage of my code can be demonstrated in these [notebooks](https://gist.githu
 2. Enhancing documentation by adding more content and improving the clarity of existing documentation.
 
 3. Staying updated with the latest research developments and monitoring for potential breaking changes introduced by the libraries used in the project.
+
+# What code got merged
+
+The whole project is set to be merged upstream in a few weeks after some more reviews and changes.
 
 # Maths Behind the Project
 
