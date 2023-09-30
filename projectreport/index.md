@@ -59,7 +59,7 @@ The project is nearly done, only things left are some more reviews by the mentor
 
 # What code got merged
 
-The whole project is set to be merged upstream in a few weeks after some more reviews and changes.
+The whole project is set to be merged upstream in a few weeks after some more reviews and changes. Update: The project has been merged on 28th September 2023.
 
 # Maths Behind the Project
 
